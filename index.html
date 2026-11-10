@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>காமலேஷ் பண்ணை AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f7ef;color:#173b25}
+header{background:#124b2b;color:white;padding:22px;border-radius:0 0 22px 22px}
+h1{font-size:25px}
+button{border:0;border-radius:10px;padding:12px;background:#d9f2dc;color:#17472a;font-weight:bold}
+.lang{float:right}
+.hero{background:#d9edda;margin:15px;padding:20px;border-radius:16px}
+main{padding:15px}
+.search{width:100%;padding:14px;border:1px solid #ccc;border-radius:10px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:white;padding:15px;border-radius:15px;box-shadow:0 2px 8px #0001}
+.card .emoji{font-size:30px}
+.card h3{font-size:15px}
+.card p{font-size:13px;color:#607064;min-height:38px}
+.card button{width:100%;background:#176b37;color:white}
+.market{background:white;padding:17px;margin-top:20px;border-radius:15px}
+.market button{background:#176b37;color:white}
+.modal{display:none;position:fixed;inset:0;background:#0009;align-items:center;justify-content:center;padding:15px}
+.dialog{background:white;padding:20px;border-radius:15px;width:100%;max-width:420px;max-height:85vh;overflow:auto}
+.dialog input,.dialog textarea,.dialog select{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px}
+.dialog button{background:#176b37;color:white;margin-top:8px}
+footer{text-align:center;padding:20px;font-size:12px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<button class="lang" onclick="toggleLang()" id="language">English</button>
+<h1>🌱 காமலேஷ் பண்ணை AI</h1>
+<p id="subtitle">தமிழ்நாடு விவசாயிகளுக்கான ஸ்மார்ட் உதவியாளர்</p>
+</header>
+
+<div class="hero">
+<h2 id="welcome">🌾 வணக்கம் விவசாயி!</h2>
+<p id="intro">உங்கள் விவசாயப் பணிகளுக்கு AI தொழில்நுட்ப உதவி.</p>
+<strong>🌱 விவசாயம் • தொழில்நுட்பம் • வளர்ச்சி</strong>
+</div>
+
+<main>
+<input class="search" id="search" placeholder="விவசாய சேவைகளைத் தேடுங்கள்..." oninput="filterCards()">
+<h3 id="serviceTitle">எங்களின் 11 முக்கிய சேவைகள்</h3>
+<div class="grid" id="grid"></div>
+
+<div class="market">
+<h2 id="marketTitle">🚜 விவசாய உபகரணச் சந்தை</h2>
+<p id="marketDesc">மற்ற விவசாயிகளிடமிருந்து உபகரணங்களை வாங்கவும், விற்கவும், வாடகைக்கு எடுக்கவும்.</p>
+<button onclick="openModule('market')" id="marketButton">சந்தையைத் திறக்கவும்</button>
+</div>
+</main>
+
+<div class="modal" id="modal">
+<div class="dialog">
+<button onclick="closeModal()">மூடு ✕</button>
+<div id="content"></div>
+</div>
+</div>
+
+<footer>காமலேஷ் பண்ணை AI<br>விவசாயமே நாட்டின் முதுகெலும்பு 🌾</footer>
+
+<script>
+let tamil=true;
+
+const features=[
+["💧","நிலத்தடி நீர் கண்டறிதல்","Geophysical Survey தரவுகளை ஆய்வு செய்யுங்கள்."],
+["🌿","பயிர் நோய் கண்டறிதல்","பயிரின் புகைப்படத்தை பதிவேற்றி நோய்களைக் கண்டறியுங்கள்."],
+["🧪","மண் பரிசோதனை","மண்ணின் pH மற்றும் ஊட்டச்சத்துகளை அறியுங்கள்."],
+["🌾","பயிர் பரிந்துரை","உங்கள் நிலத்திற்கு ஏற்ற பயிர்களைத் தேர்ந்தெடுங்கள்."],
+["🚿","நீர்ப்பாசன மேலாண்மை","பயிர்களுக்கு தேவையான நீரைத் திட்டமிடுங்கள்."],
+["🌦️","வானிலை அறிக்கை","மழை மற்றும் வெப்பநிலை தகவல்களை அறியுங்கள்."],
+["🧴","உர ஆலோசனை","மண் பரிசோதனை அடிப்படையில் உர வழிகாட்டுதல் பெறுங்கள்."],
+["📈","சந்தை விலை","விவசாயப் பொருட்களின் சந்தை விலைகளை அறியுங்கள்."],
+["🤖","AI விவசாய உதவியாளர்","விவசாயக் கேள்விகளைத் தமிழில் கேளுங்கள்."],
+["📋","பண்ணை மேலாண்மை","செலவு, அறுவடை மற்றும் வருமானத்தைக் கணக்கிடுங்கள்."],
+["🚜","உபகரணச் சந்தை","விவசாய உபகரணங்களை வாங்கவும், விற்கவும், வாடகைக்கு எடுக்கவும்."]
+];
+
+const english=[
+"Underground Water Finder","Plant Disease Detector","Soil Analysis",
+"Crop Recommendation","Smart Irrigation","Weather Forecast",
+"Fertilizer Assistant","Market Prices","AI Farmer Assistant",
+"Farm Management","Equipment Marketplace"
+];
+
+function render(){
+document.getElementById("grid").innerHTML=features.map((f,i)=>`
+<div class="card" data-name="${(f[1]+" "+english[i]).toLowerCase()}">
+<div class="emoji">${f[0]}</div>
+<h3>${i+1}. ${tamil?f[1]:english[i]}</h3>
+<p>${tamil?f[2]:"Explore "+english[i]+" services for your farm."}</p>
+<button onclick="openModule(${i})">${tamil?"திறக்கவும்":"Open"}</button>
+</div>`).join("");
+}
+
+function toggleLang(){
+tamil=!tamil;
+document.documentElement.lang=tamil?"ta":"en";
+document.getElementById("language").textContent=tamil?"English":"தமிழ்";
+document.getElementById("subtitle").textContent=tamil?"தமிழ்நாடு விவசாயிகளுக்கான ஸ்மார்ட் உதவியாளர்":"Smart Assistant for Tamil Nadu Farmers";
+document.getElementById("welcome").textContent=tamil?"🌾 வணக்கம் விவசாயி!":"🌾 Welcome, Farmer!";
+document.getElementById("intro").textContent=tamil?"உங்கள் விவசாயப் பணிகளுக்கு AI தொழில்நுட்ப உதவி.":"AI technology to support your farming.";
+document.getElementById("serviceTitle").textContent=tamil?"எங்களின் 11 முக்கிய சேவைகள்":"Our 11 Main Services";
+document.getElementById("marketTitle").textContent=tamil?"🚜 விவசாய உபகரணச் சந்தை":"🚜 Farm Equipment Marketplace";
+document.getElementById("marketDesc").textContent=tamil?"மற்ற விவசாயிகளிடமிருந்து உபகரணங்களை வாங்கவும், விற்கவும், வாடகைக்கு எடுக்கவும்.":"Buy, sell and rent equipment from other farmers.";
+document.getElementById("marketButton").textContent=tamil?"சந்தையைத் திறக்கவும்":"Open Marketplace";
+document.getElementById("search").placeholder=tamil?"விவசாய சேவைகளைத் தேடுங்கள்...":"Search farming services...";
+render();
+}
+
+function openModule(i){
+let title,description,form="";
+if(i==="market"){
+title="🚜 "+(tamil?"விவசாய உபகரணச் சந்தை":"Equipment Marketplace");
+description=tamil?"உபகரணங்களை வாங்க, விற்க அல்லது வாடகைக்கு விட விவரங்களை உள்ளிடுங்கள்.":"Enter details to buy, sell or rent equipment.";
+form=`
+<label>உபகரணத்தின் பெயர்</label>
+<input placeholder="டிராக்டர், மோட்டார், பவர் டில்லர்">
+<label>செயல்</label>
+<select><option>வாங்க வேண்டும்</option><option>விற்க வேண்டும்</option><option>வாடகைக்கு எடுக்க வேண்டும்</option><option>வாடகைக்கு விட வேண்டும்</option></select>
+<label>விலை (₹)</label><input type="number" placeholder="விலையை உள்ளிடுங்கள்">
+<label>ஊர் / மாவட்டம்</label><input placeholder="உங்கள் ஊர்">
+<label>தொடர்பு எண்</label><input type="tel" placeholder="தொலைபேசி எண்">
+<button onclick="alert('இது மாதிரி படிவம். அடுத்த கட்டத்தில் தரவுத்தளத்துடன் இணைப்போம்.')">விவரங்களைச் சமர்ப்பிக்கவும்</button>`;
+}else{
+title=features[i][0]+" "+(tamil?features[i][1]:english[i]);
+description=features[i][2];
+form=`
+<label>${i===0?"நிலத்தடி நீர் ஆய்வு விவரங்கள்":i===1?"பயிர் புகைப்படம்":"விவரங்களை உள்ளிடுங்கள்"}</label>
+<input type="${i===1?"file":"text"}" ${i===1?"accept='image/*'":""}>
+<label>கூடுதல் தகவல்கள்</label>
+<textarea rows="3" placeholder="உங்கள் விவரங்களை எழுதுங்கள்..."></textarea>
+<button onclick="alert('விவரங்கள் பெறப்பட்டன. அடுத்த கட்டத்தில் உண்மையான AI சேவையுடன் இணைப்போம்.')">சமர்ப்பிக்கவும்</button>`;
+}
+document.getElementById("content").innerHTML=`<h2>${title}</h2><p>${description}</p>${form}`;
+document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+function filterCards(){
+let q=document.getElementById("search").value.toLowerCase();
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display=c.dataset.name.includes(q)?"block":"none";
+});
+}
+render();
+</script>
+</body>
+</html>
