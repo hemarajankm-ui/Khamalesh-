@@ -153,5 +153,20 @@ c.style.display=c.dataset.name.includes(q)?"block":"none";
 }
 render();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://vgeqdnxlejtbzorlioqr.supabase.co";
+
+const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Khamalesh Farm AI connected to Supabase!");
+</script>
+
 </body>
 </html>
