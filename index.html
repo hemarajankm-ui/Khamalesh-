@@ -86,6 +86,106 @@ this.reset();">
 </form>
 
 </section>
+<section id="crop-market" style="padding:15px;border:1px solid #ccc;border-radius:12px;margin:15px 0;">
+  <h2>🌾 பயிர் சந்தை</h2>
+  <p>உங்கள் பயிர்களை விற்பனைக்கு பதிவு செய்யுங்கள்</p>
+
+  <form id="cropForm">
+    <label>பயிரின் பெயர்</label>
+    <input name="crop" placeholder="நெல் / வாழை / தேங்காய்" required style="width:100%;padding:12px;margin:8px 0;">
+
+    <label>அளவு (கிலோ)</label>
+    <input name="quantity" type="number" min="1" placeholder="அளவு" required style="width:100%;padding:12px;margin:8px 0;">
+
+    <label>விலை (ரூபாய்)</label>
+    <input name="price" type="number" min="1" placeholder="மொத்த விலை" required style="width:100%;padding:12px;margin:8px 0;">
+
+    <label>கிராமம்</label>
+    <input name="village" placeholder="கிராமத்தின் பெயர்" required style="width:100%;padding:12px;margin:8px 0;">
+
+    <label>தொடர்பு எண்</label>
+    <input name="phone" type="tel" pattern="[0-9]{10}" placeholder="10 இலக்க எண்" required style="width:100%;padding:12px;margin:8px 0;">
+
+    <button type="submit" style="padding:12px;background:#267a35;color:white;border:0;border-radius:8px;width:100%;">பயிரை பதிவு செய்யவும்</button>
+  </form>
+
+  <p id="cropMessage" aria-live="polite"></p>
+  <hr>
+  <h3>பதிவு செய்யப்பட்ட பயிர்கள்</h3>
+  <div id="cropListings">பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.</div>
+</section>
+
+<script>
+(function () {
+  const form = document.getElementById('cropForm');
+  const listings = document.getElementById('cropListings');
+  const message = document.getElementById('cropMessage');
+  const key = 'farmCropListings';
+
+  function showCrops() {
+    listings.replaceChildren();
+    let crops = [];
+    try {
+      crops = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!Array.isArray(crops)) crops = [];
+    } catch (e) {
+      crops = [];
+    }
+
+    if (crops.length === 0) {
+      listings.textContent = 'பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.';
+      return;
+    }
+
+    crops.forEach(function (crop) {
+      const card = document.createElement('div');
+      card.style.cssText = 'padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;';
+
+      [
+        'பயிர்: ' + crop.crop,
+        'அளவு: ' + crop.quantity + ' கிலோ',
+        'மொத்த விலை: ₹' + crop.price,
+        'கிராமம்: ' + crop.village,
+        'தொடர்பு எண்: ' + crop.phone
+      ].forEach(function (line) {
+        const p = document.createElement('p');
+        p.textContent = line;
+        card.appendChild(p);
+      });
+
+      listings.appendChild(card);
+    });
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    let crops = [];
+
+    try {
+      crops = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!Array.isArray(crops)) crops = [];
+    } catch (e) {
+      crops = [];
+    }
+
+    crops.push(data);
+
+    try {
+      localStorage.setItem(key, JSON.stringify(crops));
+      message.textContent = 'பயிர் வெற்றிகரமாக பதிவு செய்யப்பட்டது!';
+      form.reset();
+      showCrops();
+    } catch (e) {
+      message.textContent = 'சேமிக்க முடியவில்லை. சேமிப்பு இடத்தை சரிபார்க்கவும்.';
+    }
+  });
+
+  showCrops();
+})();
+</script>
+
 </main>
 
 <div class="modal" id="modal">
