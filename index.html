@@ -173,7 +173,27 @@ if (filteredCrops.length === 0) {
         p.textContent = line;
         card.appendChild(p);
       });
+const deleteBtn = document.createElement('button');
 
+deleteBtn.textContent = '🗑️ Delete';
+deleteBtn.type = 'button';
+
+deleteBtn.style.cssText =
+  'background:#dc2626;color:white;padding:10px;border:0;border-radius:8px;margin-top:10px;';
+
+deleteBtn.onclick = function() {
+  if (confirm('இந்த பயிரை நீக்க வேண்டுமா?')) {
+    const index = crops.indexOf(crop);
+
+    if (index !== -1) {
+      crops.splice(index, 1);
+      localStorage.setItem(key, JSON.stringify(crops));
+      showCrops();
+    }
+  }
+};
+
+card.appendChild(deleteBtn);
       listings.appendChild(card);
     });
   }
