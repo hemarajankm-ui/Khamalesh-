@@ -58,32 +58,33 @@ footer{text-align:center;padding:20px;font-size:12px}
   <h2>👨‍🌾 விவசாயிகள் பதிவு</h2>
   <p>உங்கள் விவரங்களை உள்ளிடவும்</p>
 
-  <form onsubmit="event.preventDefault(); document.getElementById('regMsg').textContent='மாதிரி பதிவு சரிபார்க்கப்பட்டது. விவரங்கள் சேமிக்கப்படவில்லை.';">
+<form onsubmit="event.preventDefault();
+const d=Object.fromEntries(new FormData(this));
+const a=JSON.parse(localStorage.getItem('farmers')||'[]');
+a.push(d);
+localStorage.setItem('farmers',JSON.stringify(a));
+document.getElementById('regMsg').textContent='விவசாயி பதிவு வெற்றிகரமாக முடிந்தது!';
+this.reset();">
 
-    <label>விவசாயி பெயர்</label>
-    <input type="text" placeholder="உங்கள் பெயர்" required
-    style="width:100%;padding:12px;margin:8px 0;">
+<label>விவசாயி பெயர்</label>
+<input name="name" type="text" placeholder="பெயர்" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>கைபேசி எண்</label>
-    <input type="tel" placeholder="கைபேசி எண்"
-    pattern="[0-9]{10}" required
-    style="width:100%;padding:12px;margin:8px 0;">
+<label>கைபேசி எண்</label>
+<input name="phone" type="tel" pattern="[0-9]{10}" placeholder="10 இலக்க எண்" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>கிராமம்</label>
-    <input type="text" placeholder="கிராமத்தின் பெயர்" required
-    style="width:100%;padding:12px;margin:8px 0;">
+<label>கிராமம்</label>
+<input name="village" type="text" placeholder="கிராமம்" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>மாவட்டம்</label>
-    <input type="text" placeholder="மாவட்டத்தின் பெயர்" required
-    style="width:100%;padding:12px;margin:8px 0;">
+<label>மாவட்டம்</label>
+<input name="district" type="text" placeholder="மாவட்டம்" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>நிலத்தின் அளவு</label>
-    <input type="text" placeholder="ஏக்கர் அளவு" required
-    style="width:100%;padding:12px;margin:8px 0;">
+<label>நிலத்தின் அளவு</label>
+<input name="land" type="text" placeholder="ஏக்கர்" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <button type="submit">பதிவு செய்யவும்</button>
-    <p id="regMsg"></p>
-  </form>
+<button type="submit">பதிவு செய்யவும்</button>
+<p id="regMsg"></p>
+</form>
+
 </section>
 </main>
 
