@@ -111,6 +111,14 @@ this.reset();">
 
   <p id="cropMessage" aria-live="polite"></p>
   <hr>
+  <input
+  id="cropSearch"
+  type="search"
+  placeholder="🔍 பயிர் பெயர் அல்லது கிராமத்தைத் தேடுங்கள்..."
+  style="width:100%;padding:14px;
+  margin:15px 0;border:1px solid #ccc;
+  border-radius:10px;font-size:16px;"
+
   <h3>பதிவு செய்யப்பட்ட பயிர்கள்</h3>
   <div id="cropListings">பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.</div>
 </section>
@@ -136,8 +144,21 @@ this.reset();">
       listings.textContent = 'பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.';
       return;
     }
+const query = document.getElementById('cropSearch')
+  .value.trim().toLowerCase();
 
-    crops.forEach(function (crop) {
+const filteredCrops = crops.filter(function(crop) {
+  return (
+    String(crop.crop || '').toLowerCase().includes(query) ||
+    String(crop.village || '').toLowerCase().includes(query)
+  );
+});
+
+if (filteredCrops.length === 0) {
+  listings.textContent = 'பயிர்கள் எதுவும் கிடைக்கவில்லை.';
+  return;
+
+  filteredCrops.forEach(function (crop) {
       const card = document.createElement('div');
       card.style.cssText = 'padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;';
 
@@ -177,6 +198,8 @@ this.reset();">
       message.textContent = 'பயிர் வெற்றிகரமாக பதிவு செய்யப்பட்டது!';
       form.reset();
       showCrops();
+      document.getElementById('cropSearch')
+  .addEventListener('input', showCrops);
     } catch (e) {
       message.textContent = 'சேமிக்க முடியவில்லை. சேமிப்பு இடத்தை சரிபார்க்கவும்.';
     }
