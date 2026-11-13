@@ -145,37 +145,42 @@ console.log("Khamalesh Farm AI connected to Supabase!");
   const message = document.getElementById('cropMessage');
   const key = 'farmCropListings';
 
-  function showCrops() {
-    listings.replaceChildren();
-    let crops = [];
-    try {
-      crops = JSON.parse(localStorage.getItem(key) || '[]');
-      if (!Array.isArray(crops)) crops = [];
-    } catch (e) {
-      crops = [];
-    }
+async function showCrops() {
+  listings.replaceChildren();
+  listings.textContent = 'பயிர்கள் ஏற்றப்படுகின்றன...';
 
-    if (crops.length === 0) {
+  try {
+    const { data: crops, error } = await supabaseClient
+      .from('marketplace_listings')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    listings.replaceChildren();
+
+    if (!crops || crops.length === 0) {
       listings.textContent = 'பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.';
       return;
     }
-const query = document.getElementById('cropSearch')
-  .value.trim().toLowerCase();
 
-const filteredCrops = crops.filter(function(crop) {
-  return (
-    String(crop.crop || '').toLowerCase().includes(query) ||
-    String(crop.village || '').toLowerCase().includes(query)
-  );
-});
+    const query = document.getElementById('cropSearch')
+      .value.trim().toLowerCase();
 
-if (filteredCrops.length === 0) {
-  listings.textContent = 'பயிர்கள் எதுவும் கிடைக்கவில்லை.';
-  return;
+    const filtered = crops.filter(crop =>
+      String(crop.crop || '').toLowerCase().includes(query) ||
+      String(crop.village || '').toLowerCase().includes(query)
+    );
 
-  filteredCrops.forEach(function (crop) {
+    if (filtered.length === 0) {
+      listings.textContent = 'பயிர்கள் எதுவும் கிடைக்கவில்லை.';
+      return;
+    }
+
+    filtered.forEach(crop => {
       const card = document.createElement('div');
-      card.style.cssText = 'padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;';
+      card.style.cssText =
+        'padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;';
 
       [
         'பயிர்: ' + crop.crop,
@@ -183,27 +188,49 @@ if (filteredCrops.length === 0) {
         'மொத்த விலை: ₹' + crop.price,
         'கிராமம்: ' + crop.village,
         'தொடர்பு எண்: ' + crop.phone
-      ].forEach(function (line) {
+      ].forEach(line => {
         const p = document.createElement('p');
         p.textContent = line;
         card.appendChild(p);
       });
-const deleteBtn = document.createElement('button');
 
-deleteBtn.textContent = '🗑️ Delete';
-deleteBtn.type = 'button';
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '🗑️ Delete';
+      deleteBtn.type = 'button';
+      deleteBtn.style.cssText =
+        'background:#dc2626;color:white;padding:10px;border:0;border-radius:8px;';
 
-deleteBtn.style.cssText =
-  'background:#dc2626;color:white;padding:10px;border:0;border-radius:8px;margin-top:10px;';
+      deleteBtn.onclick = async function () {
+        if (!confirm('இந்த பயிரை நீக்க வேண்டுமா?')) return;
 
-deleteBtn.onclick = function() {
-  if (confirm('இந்த பயிரை நீக்க வேண்டுமா?')) {
-    const index = crops.indexOf(crop);
+        const { error } = await supabaseClient
+          .from('marketplace_listings')
+          .delete()
+          .eq('id', crop.id);
 
-    if (index !== -1) {
-      crops.splice(index, 1);
-      localStorage.setItem(key, JSON.stringify(crops));
-      showCrops();
+        if (error) {
+          alert('Delete failed: ' + error.message);
+          return;
+        }
+
+        alert('Crop deleted successfully!');
+        showCrops();
+      };
+
+      card.appendChild(deleteBtn);
+      listings.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error(error);
+    listings.textContent = 'பயிர்களை ஏற்ற முடியவில்லை: ' + error.message;
+  }
+}
+
+document.getElementById('cropSearch')
+  .addEventListener('input', showCrops);
+
+showCrops();
     }
   }
 };
