@@ -123,6 +123,21 @@ this.reset();">
   <div id="cropListings">பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.</div>
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://vgeqdnxlejtbzorlioqr.supabase.co";
+
+const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Khamalesh Farm AI connected to Supabase!");
+</script>
+
 <script>
 (function () {
   const form = document.getElementById('cropForm');
