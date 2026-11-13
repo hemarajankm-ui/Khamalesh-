@@ -213,7 +213,21 @@ card.appendChild(deleteBtn);
     });
   }
 
-  form.addEventListener('submit', function (event) {
+form.addEventListener('submit', async function (event) {
+  event.preventDefault();
+
+  const data = Object.fromEntries(
+    new FormData(form).entries()
+  );
+
+  await saveCrop(
+    data.crop,
+    data.quantity,
+    data.price,
+    data.village,
+    data.phone
+  );
+});  
     event.preventDefault();
 
     const data = Object.fromEntries(new FormData(form).entries());
@@ -241,6 +255,42 @@ card.appendChild(deleteBtn);
   });
 
   showCrops();
+  
+async function saveCrop(crop, quantity, price, village, phone) {
+  try {
+    const { data: { user }, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError) throw authError;
+
+    if (!user) {
+      alert("Please login as a farmer first!");
+      return;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("marketplace_listings")
+      .insert([{
+        farmer_id: user.id,
+        crop: crop,
+        quantity: Number(quantity),
+        price: Number(price),
+        village: village,
+        phone: phone
+      }])
+      .select();
+
+    if (error) throw error;
+
+    alert("Crop registered successfully!");
+
+    location.reload();
+
+  } catch (error) {
+    console.error("Crop saving error:", error);
+    alert("Could not save crop: " + error.message);
+  }
+}  
 })();
 </script>
 
