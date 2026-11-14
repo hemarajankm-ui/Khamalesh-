@@ -242,8 +242,10 @@ card.appendChild(deleteBtn);
 
 form.addEventListener('submit', async function (event) {
   event.preventDefault();
-
+  
+alert("Register button is working!");
   const data = Object.fromEntries(
+    
     new FormData(form).entries()
   );
 
