@@ -288,7 +288,8 @@ async function saveCrop(crop, quantity, price, village, phone) {
 
     alert("Crop registered successfully!");
 
-    location.reload();
+    form.reset();
+showCrops();
     
   } catch (error) {
     console.error("Crop saving error:", error);
