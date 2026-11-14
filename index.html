@@ -537,7 +537,54 @@ function openModule(i){
   return;
 }
 let title,description,form="";
-if(i==="market"){
+
+if (i === 0) {
+  title = "💧 நிலத்தடி நீர் ஆய்வு";
+  description = "நிலத்தடி நீர் பற்றிய விவரங்களை உள்ளிடுங்கள்.";
+
+  form = `
+    <form id="groundwaterForm" onsubmit="analyzeGroundwater(event)">
+      <label>கிராமம்</label>
+      <input id="gwVillage" required placeholder="கிராமத்தின் பெயர்">
+
+      <label>மாவட்டம்</label>
+      <input id="gwDistrict" required placeholder="மாவட்டத்தின் பெயர்">
+
+      <label>அருகிலுள்ள கிணற்றின் ஆழம் (மீட்டர்)</label>
+      <input id="gwDepth" type="number" min="0" step="0.1"
+        placeholder="உதாரணம்: 30">
+
+      <label>நீர் கிடைக்கும் நிலை</label>
+      <select id="gwWater">
+        <option value="regular">ஆண்டு முழுவதும் கிடைக்கிறது</option>
+        <option value="seasonal">மழைக்காலத்தில் மட்டும் கிடைக்கிறது</option>
+        <option value="scarce">நீர் குறைவாக கிடைக்கிறது</option>
+        <option value="unknown">தெரியவில்லை</option>
+      </select>
+
+      <label>மண் மற்றும் பாறை வகை</label>
+      <select id="gwRock">
+        <option value="red">சிவப்பு மண்</option>
+        <option value="black">கரிசல் மண்</option>
+        <option value="sand">மணல் மண்</option>
+        <option value="gravel">சரளை / பாறை</option>
+        <option value="unknown">தெரியவில்லை</option>
+      </select>
+
+      <label>கூடுதல் தகவல்கள்</label>
+      <textarea id="gwNotes" rows="3"
+        placeholder="உங்கள் விவரங்களை எழுதுங்கள்"></textarea>
+
+      <button type="submit"
+        style="width:100%;margin-top:12px">
+        நீர் ஆய்வு செய்யவும்
+      </button>
+    </form>
+
+    <div id="gwResult" aria-live="polite"></div>
+  `;
+} else if(i==="market"){
+
 title="🚜 "+(tamil?"விவசாய உபகரணச் சந்தை":"Equipment Marketplace");
 description=tamil?"உபகரணங்களை வாங்க, விற்க அல்லது வாடகைக்கு விட விவரங்களை உள்ளிடுங்கள்.":"Enter details to buy, sell or rent equipment.";
 form=`
@@ -563,6 +610,77 @@ document.getElementById("content").innerHTML=`<h2>${title}</h2><p>${description}
 document.getElementById("modal").style.display="flex";
 }
 
+function analyzeGroundwater(event) {
+  event.preventDefault();
+
+  const village = document.getElementById("gwVillage").value.trim();
+  const district = document.getElementById("gwDistrict").value.trim();
+  const depthValue = document.getElementById("gwDepth").value;
+  const water = document.getElementById("gwWater").value;
+  const rock = document.getElementById("gwRock").value;
+  const notes = document.getElementById("gwNotes").value.trim();
+
+  const result = document.getElementById("gwResult");
+
+  if (depthValue !== "" &&
+      (!Number.isFinite(Number(depthValue)) || Number(depthValue) < 0)) {
+    result.textContent = "சரியான கிணறு ஆழத்தை உள்ளிடுங்கள்.";
+    return;
+  }
+
+  const waterText = {
+    regular: "ஆண்டு முழுவதும் நீர் கிடைப்பதாக தெரிவிக்கப்பட்டுள்ளது.",
+    seasonal: "மழைக்காலத்தில் மட்டும் நீர் கிடைப்பதாக தெரிவிக்கப்பட்டுள்ளது.",
+    scarce: "நீர் குறைவாக கிடைப்பதாக தெரிவிக்கப்பட்டுள்ளது.",
+    unknown: "நீர் கிடைக்கும் நிலை தெரியவில்லை."
+  };
+
+  const rockText = {
+    red: "சிவப்பு மண்",
+    black: "கரிசல் மண்",
+    sand: "மணல் மண்",
+    gravel: "சரளை / பாறை",
+    unknown: "தெரியவில்லை"
+  };
+
+  result.replaceChildren();
+
+  const heading = document.createElement("h3");
+  heading.textContent = "💧 நிலத்தடி நீர் ஆய்வு அறிக்கை";
+  result.appendChild(heading);
+
+  const details = [
+    "கிராமம்: " + village,
+    "மாவட்டம்: " + district,
+    "அருகிலுள்ள கிணற்றின் ஆழம்: " +
+      (depthValue === "" ? "தெரியவில்லை" : depthValue + " மீட்டர்"),
+    waterText[water],
+    "மண் / பாறை வகை: " + rockText[rock],
+    "கூடுதல் தகவல்கள்: " + (notes || "இல்லை")
+  ];
+
+  details.forEach(function(item) {
+    const p = document.createElement("p");
+    p.textContent = "• " + item;
+    result.appendChild(p);
+  });
+
+  const advice = document.createElement("p");
+  advice.textContent =
+    "பரிந்துரை: அருகிலுள்ள கிணறுகளின் நீர் நிலையை ஆய்வு செய்யவும். " +
+    "துளையிடுவதற்கு முன் தகுதியான நிபுணரிடம் மின்தடை புவியியல் " +
+    "ஆய்வு (Geophysical Survey) செய்யுங்கள்.";
+
+  result.appendChild(advice);
+
+  const warning = document.createElement("p");
+  warning.textContent =
+    "குறிப்பு: இது நீங்கள் அளித்த தகவல்களின் அடிப்படையிலான ஆரம்ப அறிக்கை மட்டுமே. " +
+    "நிலத்தடி நீர் இருப்பதை இந்த முறை உறுதிப்படுத்தாது.";
+
+  result.appendChild(warning);
+  }
+       
 function closeModal(){
 document.getElementById("modal").style.display="none";
 }
