@@ -498,6 +498,16 @@ render();
 }
 
 function openModule(i){
+  if (
+  (features[i][0] + " " + features[i][1])
+  .toLowerCase().includes("soil") ||
+  (features[i][0] + " " + features[i][1]).includes("மண்")
+) {
+  closeModal();
+  document.getElementById("soil-analyzer")
+    .scrollIntoView({behavior:"smooth"});
+  return;
+}
 let title,description,form="";
 if(i==="market"){
 title="🚜 "+(tamil?"விவசாய உபகரணச் சந்தை":"Equipment Marketplace");
