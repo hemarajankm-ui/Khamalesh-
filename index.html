@@ -425,6 +425,34 @@ showCrops();
       result.appendChild(line);
     });
 
+// AI Crop Recommendation
+const cropTitle = document.createElement("h3");
+cropTitle.textContent = "🌾 உங்களுக்கு ஏற்ற பயிர்கள்";
+result.appendChild(cropTitle);
+
+let cropSuggestions = [];
+
+if (ph < 5.5) {
+  cropSuggestions = ["நெல்", "மரவள்ளிக்கிழங்கு"];
+} else if (ph <= 7.5) {
+  cropSuggestions = ["நிலக்கடலை", "பயறு வகைகள்", "மக்காச்சோளம்"];
+} else {
+  cropSuggestions = ["பருத்தி", "கம்பு"];
+}
+
+const cropText = document.createElement("p");
+cropText.textContent =
+  "பரிந்துரைக்கப்படும் பயிர்கள்: " +
+  cropSuggestions.join(", ");
+
+result.appendChild(cropText);
+
+const cropNote = document.createElement("p");
+cropNote.textContent =
+  "குறிப்பு: இந்தப் பரிந்துரை pH அடிப்படையிலான ஆரம்ப வழிகாட்டுதல் மட்டுமே. NPK, மண் வகை, நீர் வசதி மற்றும் பருவநிலையையும் கருத்தில் கொண்டு பயிரைத் தேர்வு செய்யவும்.";
+
+result.appendChild(cropNote);
+
     const note = document.createElement("p");
     note.textContent = "குறிப்பு: இவை பொதுவான வழிகாட்டுதல்கள். உரத்தின் அளவை நிர்ணயிக்க முழுமையான மண் பரிசோதனை மற்றும் பயிர் விவரங்கள் அவசியம்.";
     note.style.cssText = "background:#fff3cd;padding:10px;border-radius:8px;";
