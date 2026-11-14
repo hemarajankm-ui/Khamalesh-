@@ -299,6 +299,32 @@ showCrops();
 })();
 </script>
 
+<section id="soil-analyser" class="section">
+  <h2>🌱 மண் பரிசோதனை (Soil Analyser)</h2>
+  <p>உங்கள் மண்ணின் அளவுகளை உள்ளிட்டு பரிந்துரைகளைப் பெறுங்கள்.</p>
+
+  <form id="soilForm">
+    <label>Soil pH</label>
+    <input type="number" name="ph" min="0" max="14"
+      step="0.1" placeholder="Example: 6.5" required>
+
+    <label>Nitrogen (N)</label>
+    <input type="number" name="nitrogen" min="0"
+      placeholder="Nitrogen value" required>
+
+    <label>Phosphorus (P)</label>
+    <input type="number" name="phosphorus" min="0"
+      placeholder="Phosphorus value" required>
+
+    <label>Potassium (K)</label>
+    <input type="number" name="potassium" min="0"
+      placeholder="Potassium value" required>
+
+    <button type="submit">Analyse Soil</button>
+  </form>
+
+  <div id="soilResult" aria-live="polite"></div>
+</section>
 </main>
 
 <div class="modal" id="modal">
@@ -311,6 +337,37 @@ showCrops();
 <footer>காமலேஷ் பண்ணை AI<br>விவசாயமே நாட்டின் முதுகெலும்பு 🌾</footer>
 
 <script>
+document.getElementById('soilForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const data = new FormData(form);
+
+  const ph = Number(data.get('ph'));
+  const nitrogen = Number(data.get('nitrogen'));
+  const phosphorus = Number(data.get('phosphorus'));
+  const potassium = Number(data.get('potassium'));
+
+  let result = '<h3>மண் பரிசோதனை முடிவு</h3>';
+
+  if (ph < 5.5) {
+    result += '<p>Soil: Acidic</p>';
+  } else if (ph > 7.5) {
+    result += '<p>Soil: Alkaline</p>';
+  } else {
+    result += '<p>Soil: Near neutral</p>';
+  }
+
+  result += '<p>pH: ' + ph + '</p>';
+  result += '<p>Nitrogen: ' + nitrogen + '</p>';
+  result += '<p>Phosphorus: ' + phosphorus + '</p>';
+  result += '<p>Potassium: ' + potassium + '</p>';
+
+  result += '<p>குறிப்பு: NPK அளவுகளை உங்கள் மண் பரிசோதனை ஆய்வகத்தின் பரிந்துரைக்கப்பட்ட அளவுகளுடன் ஒப்பிடவும்.</p>';
+
+  document.getElementById('soilResult').innerHTML = result;
+});
+
 let tamil=true;
 
 const features=[
