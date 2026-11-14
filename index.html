@@ -299,32 +299,141 @@ showCrops();
 })();
 </script>
 
-<section id="soil-analyser" class="section">
-  <h2>🌱 மண் பரிசோதனை (Soil Analyser)</h2>
-  <p>உங்கள் மண்ணின் அளவுகளை உள்ளிட்டு பரிந்துரைகளைப் பெறுங்கள்.</p>
+<section id="soil-analyzer" style="padding:16px;margin:15px 0;border:2px solid #4a9b50;border-radius:14px;">
+  <h2>🌱 AI மண் பரிசோதனை</h2>
+  <p>உங்கள் மண் பரிசோதனை அறிக்கையில் உள்ள மதிப்புகளை உள்ளிடவும்.</p>
 
   <form id="soilForm">
-    <label>Soil pH</label>
-    <input type="number" name="ph" min="0" max="14"
-      step="0.1" placeholder="Example: 6.5" required>
+    <label>மண்ணின் pH அளவு</label>
+    <input id="soilPH" type="number" min="0" max="14" step="0.1" placeholder="உதா: 7.0" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>Nitrogen (N)</label>
-    <input type="number" name="nitrogen" min="0"
-      placeholder="Nitrogen value" required>
+    <label>நைட்ரஜன் (N) - கிலோ / ஹெக்டேர்</label>
+    <input id="soilN" type="number" min="0" step="0.1" placeholder="N மதிப்பு" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>Phosphorus (P)</label>
-    <input type="number" name="phosphorus" min="0"
-      placeholder="Phosphorus value" required>
+    <label>பாஸ்பரஸ் (P) - கிலோ / ஹெக்டேர்</label>
+    <input id="soilP" type="number" min="0" step="0.1" placeholder="P மதிப்பு" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <label>Potassium (K)</label>
-    <input type="number" name="potassium" min="0"
-      placeholder="Potassium value" required>
+    <label>பொட்டாசியம் (K) - கிலோ / ஹெக்டேர்</label>
+    <input id="soilK" type="number" min="0" step="0.1" placeholder="K மதிப்பு" required style="width:100%;padding:12px;margin:8px 0;">
 
-    <button type="submit">Analyse Soil</button>
+    <button type="submit" style="width:100%;padding:13px;background:#267a35;color:white;border:0;border-radius:8px;">
+      மண்ணை ஆய்வு செய்யவும்
+    </button>
   </form>
 
-  <div id="soilResult" aria-live="polite"></div>
+  <div id="soilResult" aria-live="polite" style="margin-top:15px;"></div>
 </section>
+
+<script>
+(function () {
+  const form = document.getElementById("soilForm");
+  const result = document.getElementById("soilResult");
+
+  if (!form || !result) return;
+
+  function rating(value, low, high) {
+    if (value < low) return "குறைவு";
+    if (value <= high) return "மத்திமம்";
+    return "அதிகம்";
+  }
+
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const ph = Number(document.getElementById("soilPH").value);
+    const n = Number(document.getElementById("soilN").value);
+    const p = Number(document.getElementById("soilP").value);
+    const k = Number(document.getElementById("soilK").value);
+
+    if (
+      !Number.isFinite(ph) || !Number.isFinite(n) ||
+      !Number.isFinite(p) || !Number.isFinite(k) ||
+      ph < 0 || ph > 14 || n < 0 || p < 0 || k < 0
+    ) {
+      result.textContent = "சரியான மண் பரிசோதனை மதிப்புகளை உள்ளிடவும்.";
+      return;
+    }
+
+    const nr = rating(n, 240, 480);
+    const pr = rating(p, 11, 22);
+    const kr = rating(k, 110, 280);
+
+    let phStatus = "";
+    let advice = [];
+
+    if (ph < 6) {
+      phStatus = "அமிலத்தன்மை அதிகம்";
+      advice.push("மண் அமிலத்தன்மையை ஆய்வு செய்யவும். சுண்ணாம்பு தேவைப்படுகிறதா என்பதை மண் பரிசோதனை அடிப்படையில் முடிவு செய்யவும்.");
+    } else if (ph <= 8.5) {
+      phStatus = "சாதாரண pH வரம்பு";
+      advice.push("pH அளவு பொதுவாக ஏற்ற வரம்பில் உள்ளது.");
+    } else {
+      phStatus = "காரத்தன்மை அதிகம்";
+      advice.push("மண்ணின் காரத்தன்மை மற்றும் உப்புத்தன்மையை ஆய்வகத்தில் பரிசோதிக்கவும். ஜிப்சம் தேவை என்பதை உறுதிப்படுத்தாமல் பயன்படுத்த வேண்டாம்.");
+    }
+
+    if (nr === "குறைவு") {
+      advice.push("நைட்ரஜன் குறைவாக உள்ளது. மக்கிய தொழு உரம் அல்லது பசுந்தாள் உரம் போன்ற கரிமப் பொருட்கள் பற்றி வேளாண் நிபுணரிடம் ஆலோசிக்கவும்.");
+    } else if (nr === "மத்திமம்") {
+      advice.push("நைட்ரஜன் மத்திம நிலையில் உள்ளது. பயிரின் தேவைக்கேற்ப உர மேலாண்மை செய்யவும்.");
+    } else {
+      advice.push("நைட்ரஜன் அதிகமாக உள்ளது. கூடுதல் நைட்ரஜன் உரத்தை பரிந்துரையின்றி இட வேண்டாம்.");
+    }
+
+    if (pr === "குறைவு") {
+      advice.push("மணிச்சத்து குறைவாக உள்ளது. பயிருக்கு ஏற்ற பாஸ்பரஸ் உரத்தை மண் பரிசோதனை அடிப்படையில் தேர்வு செய்யவும்.");
+    } else if (pr === "அதிகம்") {
+      advice.push("மணிச்சத்து அதிகமாக உள்ளது. கூடுதல் பாஸ்பரஸ் உரத்தை பரிந்துரையின்றி இட வேண்டாம்.");
+    } else {
+      advice.push("மணிச்சத்து மத்திம நிலையில் உள்ளது.");
+    }
+
+    if (kr === "குறைவு") {
+      advice.push("சாம்பல் சத்து குறைவாக உள்ளது. பொட்டாசியம் உரத் தேவையை வேளாண் நிபுணரிடம் உறுதிப்படுத்தவும்.");
+    } else if (kr === "அதிகம்") {
+      advice.push("சாம்பல் சத்து அதிகமாக உள்ளது. கூடுதல் பொட்டாசியம் உரத்தை பரிந்துரையின்றி இட வேண்டாம்.");
+    } else {
+      advice.push("சாம்பல் சத்து மத்திம நிலையில் உள்ளது.");
+    }
+
+    result.replaceChildren();
+
+    const heading = document.createElement("h3");
+    heading.textContent = "📊 உங்கள் மண் ஆய்வு முடிவு";
+    result.appendChild(heading);
+
+    const rows = [
+      "மண் pH: " + ph + " - " + phStatus,
+      "நைட்ரஜன் (N): " + n + " kg/ha - " + nr,
+      "பாஸ்பரஸ் (P): " + p + " kg/ha - " + pr,
+      "பொட்டாசியம் (K): " + k + " kg/ha - " + kr
+    ];
+
+    rows.forEach(function(text) {
+      const line = document.createElement("p");
+      line.textContent = "• " + text;
+      result.appendChild(line);
+    });
+
+    const sub = document.createElement("h3");
+    sub.textContent = "🌿 மண் மேம்பாட்டு ஆலோசனைகள்";
+    result.appendChild(sub);
+
+    advice.forEach(function(text) {
+      const line = document.createElement("p");
+      line.textContent = "✓ " + text;
+      result.appendChild(line);
+    });
+
+    const note = document.createElement("p");
+    note.textContent = "குறிப்பு: இவை பொதுவான வழிகாட்டுதல்கள். உரத்தின் அளவை நிர்ணயிக்க முழுமையான மண் பரிசோதனை மற்றும் பயிர் விவரங்கள் அவசியம்.";
+    note.style.cssText = "background:#fff3cd;padding:10px;border-radius:8px;";
+    result.appendChild(note);
+  });
+})();
+</script>
+  
+
 </main>
 
 <div class="modal" id="modal">
@@ -337,35 +446,7 @@ showCrops();
 <footer>காமலேஷ் பண்ணை AI<br>விவசாயமே நாட்டின் முதுகெலும்பு 🌾</footer>
 
 <script>
-document.getElementById('soilForm').addEventListener('submit', function(event) {
-  event.preventDefault();
 
-  const form = event.currentTarget;
-  const data = new FormData(form);
-
-  const ph = Number(data.get('ph'));
-  const nitrogen = Number(data.get('nitrogen'));
-  const phosphorus = Number(data.get('phosphorus'));
-  const potassium = Number(data.get('potassium'));
-
-  let result = '<h3>மண் பரிசோதனை முடிவு</h3>';
-
-  if (ph < 5.5) {
-    result += '<p>Soil: Acidic</p>';
-  } else if (ph > 7.5) {
-    result += '<p>Soil: Alkaline</p>';
-  } else {
-    result += '<p>Soil: Near neutral</p>';
-  }
-
-  result += '<p>pH: ' + ph + '</p>';
-  result += '<p>Nitrogen: ' + nitrogen + '</p>';
-  result += '<p>Phosphorus: ' + phosphorus + '</p>';
-  result += '<p>Potassium: ' + potassium + '</p>';
-
-  result += '<p>குறிப்பு: NPK அளவுகளை உங்கள் மண் பரிசோதனை ஆய்வகத்தின் பரிந்துரைக்கப்பட்ட அளவுகளுடன் ஒப்பிடவும்.</p>';
-
-  document.getElementById('soilResult').innerHTML = result;
 });
 
 let tamil=true;
