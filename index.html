@@ -255,32 +255,7 @@ form.addEventListener('submit', async function (event) {
     data.phone
   );
 });  
-    event.preventDefault();
-
-    const data = Object.fromEntries(new FormData(form).entries());
-    let crops = [];
-
-    try {
-      crops = JSON.parse(localStorage.getItem(key) || '[]');
-      if (!Array.isArray(crops)) crops = [];
-    } catch (e) {
-      crops = [];
-    }
-
-    crops.push(data);
-
-    try {
-      localStorage.setItem(key, JSON.stringify(crops));
-      message.textContent = 'பயிர் வெற்றிகரமாக பதிவு செய்யப்பட்டது!';
-      form.reset();
-      showCrops();
-      document.getElementById('cropSearch')
-  .addEventListener('input', showCrops);
-    } catch (e) {
-      message.textContent = 'சேமிக்க முடியவில்லை. சேமிப்பு இடத்தை சரிபார்க்கவும்.';
-    }
-  });
-
+  
   showCrops();
   
 async function saveCrop(crop, quantity, price, village, phone) {
