@@ -1,458 +1,154 @@
-
 <!DOCTYPE html>
 <html lang="ta">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>கமலேஷ் பண்ணை AI</title>
+<meta name="theme-color" content="#14532d">
+ <link rel="manifest" href="./manifest.webmanifest">
+ <link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="description" content="Khamalesh Farm AI - Tamil and English farming tools, crop marketplace and farm records.">
+<title>காமலேஷ் பண்ணை AI | Khamalesh Farm AI</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f7ef;color:#173b25}
-header{background:#124b2b;color:white;padding:22px;border-radius:0 0 22px 22px}
-h1{font-size:25px}
-button{border:0;border-radius:10px;padding:12px;background:#d9f2dc;color:#17472a;font-weight:bold}
-.lang{float:right}
-.hero{background:#d9edda;margin:15px;padding:20px;border-radius:16px}
-main{padding:15px}
-.search{width:100%;padding:14px;border:1px solid #ccc;border-radius:10px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card{background:white;padding:15px;border-radius:15px;box-shadow:0 2px 8px #0001}
-.card .emoji{font-size:30px}
-.card h3{font-size:15px}
-.card p{font-size:13px;color:#607064;min-height:38px}
-.card button{width:100%;background:#176b37;color:white}
-.market{background:white;padding:17px;margin-top:20px;border-radius:15px}
-.market button{background:#176b37;color:white}
-.modal{display:none;position:fixed;inset:0;background:#0009;align-items:center;justify-content:center;padding:15px}
-.dialog{background:white;padding:20px;border-radius:15px;width:100%;max-width:420px;max-height:85vh;overflow:auto}
-.dialog input,.dialog textarea,.dialog select{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px}
-.dialog button{background:#176b37;color:white;margin-top:8px}
-footer{text-align:center;padding:20px;font-size:12px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}}
+:root{--green:#14532d;--green2:#237a43;--green3:#dff3e3;--bg:#f4f8f3;--ink:#183525;--muted:#657568;--line:#dce8dd;--white:#fff;--red:#b42318;--gold:#fff6d8;--shadow:0 12px 35px #163d2010}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"Noto Sans Tamil",sans-serif;line-height:1.55}
+button,input,select,textarea{font:inherit}button{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer;background:var(--green2);color:white;transition:.18s}button:hover{filter:brightness(.94);transform:translateY(-1px)}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #9bd4a8;outline-offset:2px}
+a{color:var(--green2);font-weight:700}.wrap{width:min(1120px,calc(100% - 30px));margin:auto}
+header{background:linear-gradient(125deg,#103e25,#237b43);color:white;padding:22px 0 28px;border-radius:0 0 28px 28px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand{display:flex;align-items:center;gap:12px}.logo{width:52px;height:52px;border-radius:17px;background:#ffffff1c;display:grid;place-items:center;font-size:29px}.brand h1{font-size:clamp(21px,4vw,30px);margin:0;line-height:1.25}.brand p{margin:5px 0 0;color:#d9f0df;font-size:14px}.lang{background:white;color:var(--green);white-space:nowrap}
+.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:center;padding:26px 0 0}.hero h2{font-size:clamp(25px,4vw,36px);line-height:1.2;margin:0 0 10px}.hero p{color:#e4f4e7;margin:0 0 16px}.hero-art{justify-self:end;font-size:clamp(65px,10vw,105px);background:#ffffff16;border:1px solid #ffffff20;border-radius:28px;padding:14px 28px}
+main{padding:20px 0 40px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-2px}.stat{background:white;border:1px solid var(--line);border-radius:17px;padding:15px;box-shadow:var(--shadow)}.stat b{display:block;font-size:24px;color:var(--green)}.stat span{font-size:13px;color:var(--muted)}
+.toolbar{display:flex;gap:10px;align-items:center;margin:22px 0 14px}.toolbar input{flex:1}.search{width:100%}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd8cc;border-radius:11px;background:white;color:var(--ink)}label{display:block;font-weight:700;margin:10px 0 5px;font-size:14px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 12px}.section-head h2{margin:0;font-size:22px}.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.service-card,.panel,.listing{background:white;border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:var(--shadow)}.service-card{display:flex;flex-direction:column;min-height:220px}.service-card .emoji{font-size:31px}.service-card h3{font-size:17px;margin:8px 0}.service-card p{color:var(--muted);font-size:14px;flex:1;margin:0 0 14px}.service-card button{width:100%}
+.panel{margin-top:18px}.panel h2{margin:0 0 4px;font-size:21px}.muted{color:var(--muted);font-size:14px;margin:0 0 12px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.secondary{background:#e8f5e9;color:#17472a}.danger{background:var(--red);color:white}.listing{margin:10px 0;padding:15px}.listing p{margin:4px 0;overflow-wrap:anywhere}.empty{padding:16px;background:#f7faf7;border-radius:12px;color:var(--muted);border:1px dashed var(--line)}.status{margin:10px 0;font-weight:700;color:var(--green);min-height:1em}.notice{background:var(--gold);border:1px solid #f0df9c;padding:12px;border-radius:12px;margin-top:12px;font-size:13px;color:#5c4b1b}
+.badge{display:inline-block;background:#e8f5e9;color:#17472a;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.tool-links{display:flex;flex-wrap:wrap;gap:10px}.tool-links a{background:#eef7ef;border-radius:11px;padding:10px 12px;text-decoration:none}.result{background:#f2f8f2;border:1px solid var(--line);border-radius:13px;padding:14px;margin-top:12px}.result h3{margin:0 0 6px}.record-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}.record-row:last-child{border:0}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}.modal{display:none;position:fixed;inset:0;background:#071b0dcc;z-index:10;align-items:center;justify-content:center;padding:15px}.dialog{background:white;border-radius:18px;padding:20px;width:min(100%,540px);max-height:88vh;overflow:auto}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.dialog-head h2{margin:0}.close{background:#e8f5e9;color:var(--green)}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.hero-art{display:none}.two-col{grid-template-columns:1fr}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.stats{gap:8px}.stat{padding:11px}.stat b{font-size:20px}.top{align-items:flex-start}.toolbar{flex-direction:column;align-items:stretch}.section-head{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
 <header>
-<button class="lang" onclick="toggleLang()" id="language">English</button>
-<h1>🌱 காமலேஷ் பண்ணை AI</h1>
-<p id="subtitle">தமிழ்நாடு விவசாயிகளுக்கான ஸ்மார்ட் உதவியாளர்</p>
+ <div class="wrap">
+  <div class="top">
+   <div class="brand"><div class="logo">🌱</div><div><h1 id="brandTitle">காமலேஷ் பண்ணை AI</h1><p id="subtitle">தமிழ்நாடு விவசாயிகளுக்கான ஸ்மார்ட் உதவியாளர்</p></div></div>
+   <button class="lang" id="languageBtn" type="button">English</button>
+  </div>
+  <div class="hero"><div><h2 id="welcome">🌾 வணக்கம் விவசாயி!</h2><p id="intro">விவசாயப் பணிகள், சந்தை மற்றும் பண்ணை பதிவுகளுக்கான ஒரே இடம்.</p><span class="badge" id="heroBadge">விவசாயம் • தொழில்நுட்பம் • வளர்ச்சி</span></div><div class="hero-art" aria-hidden="true">🚜🌾</div></div>
+ </div>
 </header>
-
-<div class="hero">
-<h2 id="welcome">🌾 வணக்கம் விவசாயி!</h2>
-<p id="intro">உங்கள் விவசாயப் பணிகளுக்கு AI தொழில்நுட்ப உதவி.</p>
-<strong>🌱 விவசாயம் • தொழில்நுட்பம் • வளர்ச்சி</strong>
-</div>
-
-<main>
-<input class="search" id="search" placeholder="விவசாய சேவைகளைத் தேடுங்கள்..." oninput="filterCards()">
-<h3 id="serviceTitle">எங்களின் 11 முக்கிய சேவைகள்</h3>
-<div class="grid" id="grid"></div>
-
-<div class="market">
-<h2 id="marketTitle">🚜 விவசாய உபகரணச் சந்தை</h2>
-<p id="marketDesc">மற்ற விவசாயிகளிடமிருந்து உபகரணங்களை வாங்கவும், விற்கவும், வாடகைக்கு எடுக்கவும்.</p>
-<button onclick="openModule('market')" id="marketButton">சந்தையைத் திறக்கவும்</button>
-</div>
-<section class="market">
-  <h2>👨‍🌾 விவசாயிகள் பதிவு</h2>
-  <p>உங்கள் விவரங்களை உள்ளிடவும்</p>
-
-<form onsubmit="event.preventDefault();
-const d=Object.fromEntries(new FormData(this));
-const a=JSON.parse(localStorage.getItem('farmers')||'[]');
-a.push(d);
-localStorage.setItem('farmers',JSON.stringify(a));
-document.getElementById('regMsg').textContent='விவசாயி பதிவு வெற்றிகரமாக முடிந்தது!';
-this.reset();">
-
-<label>விவசாயி பெயர்</label>
-<input name="name" type="text" placeholder="பெயர்" required style="width:100%;padding:12px;margin:8px 0;">
-
-<label>கைபேசி எண்</label>
-<input name="phone" type="tel" pattern="[0-9]{10}" placeholder="10 இலக்க எண்" required style="width:100%;padding:12px;margin:8px 0;">
-
-<label>கிராமம்</label>
-<input name="village" type="text" placeholder="கிராமம்" required style="width:100%;padding:12px;margin:8px 0;">
-
-<label>மாவட்டம்</label>
-<input name="district" type="text" placeholder="மாவட்டம்" required style="width:100%;padding:12px;margin:8px 0;">
-
-<label>நிலத்தின் அளவு</label>
-<input name="land" type="text" placeholder="ஏக்கர்" required style="width:100%;padding:12px;margin:8px 0;">
-
-<button type="submit">பதிவு செய்யவும்</button>
-<p id="regMsg"></p>
-</form>
-
-</section>
-<section id="crop-market" style="padding:15px;border:1px solid #ccc;border-radius:12px;margin:15px 0;">
-  <h2>🌾 பயிர் சந்தை</h2>
-  <p>உங்கள் பயிர்களை விற்பனைக்கு பதிவு செய்யுங்கள்</p>
-
-  <form id="cropForm">
-    <label>பயிரின் பெயர்</label>
-    <input name="crop" placeholder="நெல் / வாழை / தேங்காய்" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>அளவு (கிலோ)</label>
-    <input name="quantity" type="number" min="1" placeholder="அளவு" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>விலை (ரூபாய்)</label>
-    <input name="price" type="number" min="1" placeholder="மொத்த விலை" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>கிராமம்</label>
-    <input name="village" placeholder="கிராமத்தின் பெயர்" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>தொடர்பு எண்</label>
-    <input name="phone" type="tel" pattern="[0-9]{10}" placeholder="10 இலக்க எண்" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <button type="submit" style="padding:12px;background:#267a35;color:white;border:0;border-radius:8px;width:100%;">பயிரை பதிவு செய்யவும்</button>
-  </form>
-
-  <p id="cropMessage" aria-live="polite"></p>
-  <hr>
-  <input
-  id="cropSearch"
-  type="search"
-  placeholder="🔍 பயிர் பெயர் அல்லது கிராமத்தைத் தேடுங்கள்..."
-  style="width:100%;padding:14px;
-  margin:15px 0;border:1px solid #ccc;
-  border-radius:10px;font-size:16px;"
-
-  <h3>பதிவு செய்யப்பட்ட பயிர்கள்</h3>
-  <div id="cropListings">பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.</div>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "https://vgeqdnxlejtbzorlioqr.supabase.co";
-
-const SUPABASE_KEY = "sb_publishable_T0ExSgteSL_AfTHd854rlg_AqgpSD0Q ";
-
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-console.log("Khamalesh Farm AI connected to Supabase!");
-</script>
-
-<script>
-(function () {
-  const form = document.getElementById('cropForm');
-  const listings = document.getElementById('cropListings');
-  const message = document.getElementById('cropMessage');
-  const key = 'farmCropListings';
-
-async function showCrops() {
-  listings.replaceChildren();
-  listings.textContent = 'பயிர்கள் ஏற்றப்படுகின்றன...';
-
-  try {
-    const { data: crops, error } = await supabaseClient
-      .from('marketplace_listings')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
-    listings.replaceChildren();
-
-    if (!crops || crops.length === 0) {
-      listings.textContent = 'பயிர்கள் இன்னும் பதிவு செய்யப்படவில்லை.';
-      return;
-    }
-
-    const query = document.getElementById('cropSearch')
-      .value.trim().toLowerCase();
-
-    const filtered = crops.filter(crop =>
-      String(crop.crop || '').toLowerCase().includes(query) ||
-      String(crop.village || '').toLowerCase().includes(query)
-    );
-
-    if (filtered.length === 0) {
-      listings.textContent = 'பயிர்கள் எதுவும் கிடைக்கவில்லை.';
-      return;
-    }
-
-    filtered.forEach(crop => {
-      const card = document.createElement('div');
-      card.style.cssText =
-        'padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:8px;';
-
-      [
-
-
-form.addEventListener('submit', async function (event) {
-  event.preventDefault();
-  
-alert("Register button is working!");
-  const data = Object.fromEntries(
-    
-    new FormData(form).entries()
-  );
-
-  await saveCrop(
-    data.crop,
-    data.quantity,
-    data.price,
-    data.village,
-    data.phone
-  );
-});  
-  
-  showCrops();
-  
-async function saveCrop(crop, quantity, price, village, phone) {
-  try {
-    const { data: { user }, error: authError } =
-      await supabaseClient.auth.getUser();
-
-    if (authError) throw authError;
-
-    if (!user) {
-      alert("Please login as a farmer first!");
-      return;
-    }
-
-    const { data, error } = await supabaseClient
-      .from("marketplace_listings")
-      .insert([{
-        farmer_id: user.id,
-        crop: crop,
-        quantity: Number(quantity),
-        price: Number(price),
-        village: village,
-        phone: phone
-      }])
-      .select();
-
-    if (error) throw error;
-
-    alert("Crop registered successfully!");
-
-    form.reset();
-showCrops();
-    
-  } catch (error) {
-    console.error("Crop saving error:", error);
-    alert("Could not save crop: " + error.message);
-  }
-}  
-})();
-</script>
-
-<section id="soil-analyzer" style="padding:16px;margin:15px 0;border:2px solid #4a9b50;border-radius:14px;">
-  <h2>🌱 AI மண் பரிசோதனை</h2>
-  <p>உங்கள் மண் பரிசோதனை அறிக்கையில் உள்ள மதிப்புகளை உள்ளிடவும்.</p>
-
-  <form id="soilForm">
-    <label>மண்ணின் pH அளவு</label>
-    <input id="soilPH" type="number" min="0" max="14" step="0.1" placeholder="உதா: 7.0" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>நைட்ரஜன் (N) - கிலோ / ஹெக்டேர்</label>
-    <input id="soilN" type="number" min="0" step="0.1" placeholder="N மதிப்பு" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>பாஸ்பரஸ் (P) - கிலோ / ஹெக்டேர்</label>
-    <input id="soilP" type="number" min="0" step="0.1" placeholder="P மதிப்பு" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <label>பொட்டாசியம் (K) - கிலோ / ஹெக்டேர்</label>
-    <input id="soilK" type="number" min="0" step="0.1" placeholder="K மதிப்பு" required style="width:100%;padding:12px;margin:8px 0;">
-
-    <button type="submit" style="width:100%;padding:13px;background:#267a35;color:white;border:0;border-radius:8px;">
-      மண்ணை ஆய்வு செய்யவும்
-    </button>
-  </form>
-
-  <div id="soilResult" aria-live="polite" style="margin-top:15px;"></div>
-</section>
-
-<script>
-(function () {
-  const form = document.getElementById("soilForm");
-  const result = document.getElementById("soilResult");
-
-  if (!form || !result) return;
-
-  function rating(value, low, high) {
-    if (value < low) return "குறைவு";
-    if (value <= high) return "மத்திமம்";
-    return "அதிகம்";
-  }
-
-  form.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const ph = Number(document.getElementById("soilPH").value);
-    const n = Number(document.getElementById("soilN").value);
-    const p = Number(document.getElementById("soilP").value);
-    const k = Number(document.getElementById("soilK").value);
-
-    if (
-      !Number.isFinite(ph) || !Number.isFinite(n) ||
-      !Number.isFinite(p) || !Number.isFinite(k) ||
-      ph < 0 || ph > 14 || n < 0 || p < 0 || k < 0
-    ) {
-      result.textContent = "சரியான மண் பரிசோதனை மதிப்புகளை உள்ளிடவும்.";
-      return;
-    }
-
-    const nr = rating(n, 240, 480);
-    const pr = rating(p, 11, 22);
-    const kr = rating(k, 110, 280);
-
-    let phStatus = "";
-    let advice = [];
-
-    if (ph < 6) {
-      phStatus = "அமிலத்தன்மை அதிகம்";
-      advice.push("மண் அமிலத்தன்மையை ஆய்வு செய்யவும். சுண்ணாம்பு தேவைப்படுகிறதா என்பதை மண் பரிசோதனை அடிப்படையில் முடிவு செய்யவும்.");
-    } else if (ph <= 8.5) {
-      phStatus = "சாதாரண pH வரம்பு";
-      advice.push("pH அளவு பொதுவாக ஏற்ற வரம்பில் உள்ளது.");
-    } else {
-      phStatus = "காரத்தன்மை அதிகம்";
-      advice.push("மண்ணின் காரத்தன்மை மற்றும் உப்புத்தன்மையை ஆய்வகத்தில் பரிசோதிக்கவும். ஜிப்சம் தேவை என்பதை உறுதிப்படுத்தாமல் பயன்படுத்த வேண்டாம்.");
-    }
-
-    if (nr === "குறைவு") {
-      advice.push("நைட்ரஜன் குறைவாக உள்ளது. மக்கிய தொழு உரம் அல்லது பசுந்தாள் உரம் போன்ற கரிமப் பொருட்கள் பற்றி வேளாண் நிபுணரிடம் ஆலோசிக்கவும்.");
-    } else if (nr === "மத்திமம்") {
-      advice.push("நைட்ரஜன் மத்திம நிலையில் உள்ளது. பயிரின் தேவைக்கேற்ப உர மேலாண்மை செய்யவும்.");
-    } else {
-      advice.push("நைட்ரஜன் அதிகமாக உள்ளது. கூடுதல் நைட்ரஜன் உரத்தை பரிந்துரையின்றி இட வேண்டாம்.");
-    }
-
-    if (pr === "குறைவு") {
-      advice.push("மணிச்சத்து குறைவாக உள்ளது. பயிருக்கு ஏற்ற பாஸ்பரஸ் உரத்தை மண் பரிசோதனை அடிப்படையில் தேர்வு செய்யவும்.");
-    } else if (pr === "அதிகம்") {
-      advice.push("மணிச்சத்து அதிகமாக உள்ளது. கூடுதல் பாஸ்பரஸ் உரத்தை பரிந்துரையின்றி இட வேண்டாம்.");
-    } else {
-      advice.push("மணிச்சத்து மத்திம நிலையில் உள்ளது.");
-    }
-
-    if (kr === "குறைவு") {
-      advice.push("சாம்பல் சத்து குறைவாக உள்ளது. பொட்டாசியம் உரத் தேவையை வேளாண் நிபுணரிடம் உறுதிப்படுத்தவும்.");
-    } else if (kr === "அதிகம்") {
-      advice.push("சாம்பல் சத்து அதிகமாக உள்ளது. கூடுதல் பொட்டாசியம் உரத்தை பரிந்துரையின்றி இட வேண்டாம்.");
-    } else {
-      advice.push("சாம்பல் சத்து மத்திம நிலையில் உள்ளது.");
-    }
-
-    result.replaceChildren();
-
-    const heading = document.createElement("h3");
-    heading.textContent = "📊 உங்கள் மண் ஆய்வு முடிவு";
-    result.appendChild(heading);
-
-    const rows = [
-      "மண் pH: " + ph + " - " + phStatus,
-      "நைட்ரஜன் (N): " + n + " kg/ha - " + nr,
-      "பாஸ்பரஸ் (P): " + p + " kg/ha - " + pr,
-      "பொட்டாசியம் (K): " + k + " kg/ha - " + kr
-    ];
-
-    rows.forEach(function(text) {
-      const line = document.createElement("p");
-      line.textContent = "• " + text;
-      result.appendChild(line);
-    });
-
-    const sub = document.createElement("h3");
-    sub.textContent = "🌿 மண் மேம்பாட்டு ஆலோசனைகள்";
-    result.appendChild(sub);
-
-    advice.forEach(function(text) {
-      const line = document.createElement("p");
-      line.textContent = "✓ " + text;
-      result.appendChild(line);
-    });
-
-// AI Crop Recommendation
-const cropTitle = document.createElement("h3");
-cropTitle.textContent = "🌾 உங்களுக்கு ஏற்ற பயிர்கள்";
-result.appendChild(cropTitle);
-
-let cropSuggestions = [];
-
-if (ph < 5.5) {
-  cropSuggestions = ["நெல்", "மரவள்ளிக்கிழங்கு"];
-} else if (ph <= 7.5) {
-  cropSuggestions = ["நிலக்கடலை", "பயறு வகைகள்", "மக்காச்சோளம்"];
-} else {
-  cropSuggestions = ["பருத்தி", "கம்பு"];
-}
-
-const cropText = document.createElement("p");
-cropText.textContent =
-  "பரிந்துரைக்கப்படும் பயிர்கள்: " +
-  cropSuggestions.join(", ");
-
-result.appendChild(cropText);
-
-const cropNote = document.createElement("p");
-cropNote.textContent =
-  "குறிப்பு: இந்தப் பரிந்துரை pH அடிப்படையிலான ஆரம்ப வழிகாட்டுதல் மட்டுமே. NPK, மண் வகை, நீர் வசதி மற்றும் பருவநிலையையும் கருத்தில் கொண்டு பயிரைத் தேர்வு செய்யவும்.";
-
-result.appendChild(cropNote);
-
-    const note = document.createElement("p");
-    note.textContent = "குறிப்பு: இவை பொதுவான வழிகாட்டுதல்கள். உரத்தின் அளவை நிர்ணயிக்க முழுமையான மண் பரிசோதனை மற்றும் பயிர் விவரங்கள் அவசியம்.";
-    note.style.cssText = "background:#fff3cd;padding:10px;border-radius:8px;";
-    result.appendChild(note);
-  });
-})();
-</script>
-  
-
+<main class="wrap">
+ <section class="stats" aria-label="Dashboard statistics">
+  <div class="stat"><b id="cropCount">0</b><span id="cropStat">பயிர் பட்டியல்கள்</span></div>
+  <div class="stat"><b id="farmerCount">0</b><span id="farmerStat">விவசாயி பதிவுகள்</span></div>
+  <div class="stat"><b id="equipmentCount">0</b><span id="equipmentStat">உபகரண பட்டியல்கள்</span></div>
+ </section>
+ <div class="toolbar"><input class="search" id="serviceSearch" type="search" placeholder="சேவைகளைத் தேடுங்கள்..." aria-label="Search services"><button class="secondary" id="clearSearch" type="button">அழி</button></div>
+ <div class="section-head"><div><h2 id="serviceTitle">பண்ணை சேவைகள்</h2><p id="serviceSub">உங்களுக்கு தேவையான கருவியைத் தேர்ந்தெடுக்கவும்.</p></div></div>
+ <div class="grid" id="serviceGrid"></div>
+
+ <section class="panel" id="crop-market">
+  <div class="section-head"><div><h2>🌾 <span data-ta="பயிர் சந்தை" data-en="Crop Marketplace">பயிர் சந்தை</span></h2><p class="muted" data-ta="விற்பனைக்கான பயிர் விவரங்களைச் சேர்த்து நிர்வகிக்கவும்." data-en="Add and manage crop listings for sale.">விற்பனைக்கான பயிர் விவரங்களைச் சேர்த்து நிர்வகிக்கவும்.</p></div><span class="badge">Marketplace</span></div>
+  <form id="cropForm"><div class="form-grid">
+   <div><label for="cropName" data-ta="பயிரின் பெயர்" data-en="Crop name">பயிரின் பெயர்</label><input id="cropName" required maxlength="60" placeholder="நெல் / வாழை / தேங்காய்"></div>
+   <div><label for="cropQuantity" data-ta="அளவு (கிலோ)" data-en="Quantity (kg)">அளவு (கிலோ)</label><input id="cropQuantity" type="number" min="1" max="10000000" required></div>
+   <div><label for="cropPrice" data-ta="மொத்த விலை (₹)" data-en="Total price (₹)">மொத்த விலை (₹)</label><input id="cropPrice" type="number" min="1" max="100000000" required></div>
+   <div><label for="cropVillage" data-ta="கிராமம் / மாவட்டம்" data-en="Village / district">கிராமம் / மாவட்டம்</label><input id="cropVillage" required maxlength="80"></div>
+   <div class="full"><label for="cropPhone" data-ta="தொடர்பு எண் (விருப்பம்)" data-en="Contact number (optional)">தொடர்பு எண் (விருப்பம்)</label><input id="cropPhone" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="10 இலக்க எண்"></div>
+  </div><div class="actions"><button type="submit" data-ta="பயிரைச் சேர்க்கவும்" data-en="Add crop listing">பயிரைச் சேர்க்கவும்</button><button class="secondary" type="reset" data-ta="மீட்டமை" data-en="Reset">மீட்டமை</button></div><p class="status" id="cropMessage" aria-live="polite"></p></form>
+  <label for="cropSearch" data-ta="பயிர் அல்லது கிராமத்தைத் தேடுங்கள்" data-en="Search crop or village">பயிர் அல்லது கிராமத்தைத் தேடுங்கள்</label><input id="cropSearch" type="search" placeholder="நெல் / மதுரை"><h3 data-ta="பதிவுகள்" data-en="Listings">பதிவுகள்</h3><div id="cropListings" aria-live="polite"></div>
+ </section>
+
+ <section class="two-col">
+  <div class="panel">
+   <h2>👨‍🌾 <span data-ta="விவசாயிகள் பதிவு" data-en="Farmer Registration">விவசாயிகள் பதிவு</span></h2><p class="muted" data-ta="விவரங்களை இந்தச் சாதனத்தில் சேமிக்கவும்." data-en="Save farmer details on this device.">விவரங்களை இந்தச் சாதனத்தில் சேமிக்கவும்.</p>
+   <form id="farmerForm"><label for="farmerName" data-ta="விவசாயி பெயர்" data-en="Farmer name">விவசாயி பெயர்</label><input id="farmerName" required maxlength="80"><label for="farmerPhone" data-ta="கைபேசி எண்" data-en="Phone number">கைபேசி எண்</label><input id="farmerPhone" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" required placeholder="10 இலக்க எண்"><label for="farmerVillage" data-ta="கிராமம்" data-en="Village">கிராமம்</label><input id="farmerVillage" required maxlength="80"><label for="farmerDistrict" data-ta="மாவட்டம்" data-en="District">மாவட்டம்</label><input id="farmerDistrict" required maxlength="80"><label for="farmerLand" data-ta="நிலத்தின் அளவு" data-en="Land size">நிலத்தின் அளவு</label><input id="farmerLand" required maxlength="50" placeholder="2 ஏக்கர்"><div class="actions"><button type="submit" data-ta="பதிவு செய்யவும்" data-en="Register farmer">பதிவு செய்யவும்</button></div><p class="status" id="farmerMessage" aria-live="polite"></p></form><div id="farmerListings"></div>
+  </div>
+  <div class="panel" id="equipment-market">
+   <h2>🚜 <span data-ta="உபகரணச் சந்தை" data-en="Equipment Marketplace">உபகரணச் சந்தை</span></h2><p class="muted" data-ta="வாங்க / விற்க / வாடகைக்கு பதிவு செய்யுங்கள்." data-en="List equipment to buy, sell or rent.">வாங்க / விற்க / வாடகைக்கு பதிவு செய்யுங்கள்.</p>
+   <form id="equipmentForm"><label for="equipmentName" data-ta="உபகரணத்தின் பெயர்" data-en="Equipment name">உபகரணத்தின் பெயர்</label><input id="equipmentName" required maxlength="80" placeholder="டிராக்டர் / மோட்டார்"><label for="equipmentAction" data-ta="செயல்" data-en="Action">செயல்</label><select id="equipmentAction"><option value="விற்க">விற்க</option><option value="வாங்க">வாங்க</option><option value="வாடகைக்கு விட">வாடகைக்கு விட</option><option value="வாடகைக்கு எடுக்க">வாடகைக்கு எடுக்க</option></select><label for="equipmentPrice" data-ta="விலை (₹)" data-en="Price (₹)">விலை (₹)</label><input id="equipmentPrice" type="number" min="0" max="100000000" required><label for="equipmentVillage" data-ta="ஊர் / மாவட்டம்" data-en="Village / district">ஊர் / மாவட்டம்</label><input id="equipmentVillage" required maxlength="80"><div class="actions"><button type="submit" data-ta="பதிவு செய்யவும்" data-en="Add listing">பதிவு செய்யவும்</button></div><p class="status" id="equipmentMessage" aria-live="polite"></p></form><div id="equipmentListings"></div>
+  </div>
+ </section>
+
+ <section class="panel" id="soil-analyzer">
+  <h2>🧪 <span data-ta="மண் பரிசோதனை வழிகாட்டி" data-en="Soil Test Guide">மண் பரிசோதனை வழிகாட்டி</span></h2><p class="muted" data-ta="ஆய்வக அறிக்கையில் உள்ள pH மற்றும் NPK மதிப்புகளை உள்ளிடுங்கள்." data-en="Enter pH and NPK values from your laboratory report.">ஆய்வக அறிக்கையில் உள்ள pH மற்றும் NPK மதிப்புகளை உள்ளிடுங்கள்.</p>
+  <form id="soilForm"><div class="form-grid"><div><label for="soilPH">pH (0–14)</label><input id="soilPH" type="number" min="0" max="14" step=".1" required></div><div><label for="soilN">Nitrogen (N)</label><input id="soilN" type="number" min="0" step=".1" required></div><div><label for="soilP">Phosphorus (P)</label><input id="soilP" type="number" min="0" step=".1" required></div><div><label for="soilK">Potassium (K)</label><input id="soilK" type="number" min="0" step=".1" required></div></div><div class="actions"><button type="submit" data-ta="மதிப்புகளை விளக்கவும்" data-en="Explain values">மதிப்புகளை விளக்கவும்</button></div></form><div id="soilResult" aria-live="polite"></div><div class="notice" data-ta="இது பொதுவான விளக்கம் மட்டுமே. உர அளவு அல்லது பயிர் தேர்வுக்கு முழுமையான மண் அறிக்கை மற்றும் உள்ளூர் வேளாண் அலுவலர் ஆலோசனையைப் பயன்படுத்தவும்." data-en="This is general guidance only. Use a complete soil report and local agricultural officer's advice for fertilizer rates or crop selection.">இது பொதுவான விளக்கம் மட்டுமே. உர அளவு அல்லது பயிர் தேர்வுக்கு முழுமையான மண் அறிக்கை மற்றும் உள்ளூர் வேளாண் அலுவலர் ஆலோசனையைப் பயன்படுத்தவும்.</div>
+ </section>
+
+ <section class="two-col">
+  <div class="panel" id="irrigation">
+   <h2>💧 <span data-ta="நீர்ப்பாசனத் திட்டக் குறிப்பு" data-en="Irrigation Planner Notes">நீர்ப்பாசனத் திட்டக் குறிப்பு</span></h2><p class="muted" data-ta="பயிர் மற்றும் வயல் நிலை குறித்த குறிப்புகளைச் சேமிக்கவும்." data-en="Save notes about crop and field conditions.">பயிர் மற்றும் வயல் நிலை குறித்த குறிப்புகளைச் சேமிக்கவும்.</p>
+   <form id="irrigationForm"><label for="irrigationCrop">பயிர் / Crop</label><input id="irrigationCrop" required><label for="irrigationStage">வளர்ச்சி நிலை / Growth stage</label><input id="irrigationStage" required><label for="irrigationNotes">மண் ஈரம், மழை, நீர் கிடைப்பு / Notes</label><textarea id="irrigationNotes" rows="3" required></textarea><button type="submit" style="margin-top:12px">குறிப்பைச் சேமிக்கவும் / Save note</button><p class="status" id="irrigationMessage"></p></form><div id="irrigationListings"></div>
+  </div>
+  <div class="panel" id="farm-records">
+   <h2>📒 <span data-ta="பண்ணை வரவு செலவு பதிவு" data-en="Farm Expense Records">பண்ணை வரவு செலவு பதிவு</span></h2><p class="muted" data-ta="செலவு அல்லது வருமானத்தைப் பதிவு செய்யுங்கள்." data-en="Record an expense or income.">செலவு அல்லது வருமானத்தைப் பதிவு செய்யுங்கள்.</p>
+   <form id="recordForm"><label for="recordType">வகை / Type</label><select id="recordType"><option value="செலவு">செலவு / Expense</option><option value="வருமானம்">வருமானம் / Income</option></select><label for="recordTitle">விவரம் / Description</label><input id="recordTitle" required maxlength="100"><label for="recordAmount">தொகை (₹) / Amount</label><input id="recordAmount" type="number" min="1" required><button type="submit" style="margin-top:12px">பதிவு / Add record</button><p class="status" id="recordMessage"></p></form><div id="recordListings"></div>
+  </div>
+ </section>
+
+ <section class="panel" id="quick-links"><h2>🌦️ <span data-ta="வெளிப்புற விவசாய சேவைகள்" data-en="Useful Agriculture Services">வெளிப்புற விவசாய சேவைகள்</span></h2><p class="muted" data-ta="அதிகாரப்பூர்வ தகவல்களைத் திறக்கவும்." data-en="Open official information services.">அதிகாரப்பூர்வ தகவல்களைத் திறக்கவும்.</p><div class="tool-links"><a href="https://mausam.imd.gov.in/" target="_blank" rel="noopener">🌦️ IMD Weather</a><a href="https://enam.gov.in/" target="_blank" rel="noopener">📈 e-NAM Market</a><a href="https://agmarknet.gov.in/" target="_blank" rel="noopener">🌾 Agmarknet Prices</a><a href="https://agri.tn.gov.in/" target="_blank" rel="noopener">🏛️ Tamil Nadu Agriculture</a></div></section>
+
+ <section class="panel" id="assistant"><h2>🤖 <span data-ta="பண்ணை உதவி மையம்" data-en="Farm Help Desk">பண்ணை உதவி மையம்</span></h2><p class="muted" data-ta="உங்கள் கேள்வியைத் தேர்ந்தெடுத்து தொடர்புடைய வழிகாட்டியைப் பாருங்கள்." data-en="Choose a topic to see general guidance.">உங்கள் கேள்வியைத் தேர்ந்தெடுத்து தொடர்புடைய வழிகாட்டியைப் பாருங்கள்.</p><label for="helpTopic">கேள்வி / Topic</label><select id="helpTopic"><option value="soil">மண் மற்றும் உரம் / Soil and fertilizer</option><option value="disease">பயிர் நோய் / Plant disease</option><option value="water">நீர் மேலாண்மை / Water management</option><option value="market">சந்தை விலை / Market prices</option></select><button id="helpButton" type="button" style="margin-top:12px">வழிகாட்டி காட்டு / Show guidance</button><div class="result" id="helpResult" hidden></div><div class="notice">இந்த உதவி மையம் பொதுவான தகவல்களை மட்டுமே வழங்குகிறது; வெளிப்புற AI சேவை இணைக்கப்படவில்லை. பயிர் நோய் அல்லது மருந்து பயன்பாட்டிற்கு வேளாண் நிபுணரை அணுகவும்.</div></section>
+ <section class="panel"><h2>💾 தரவு மேலாண்மை / Data Management</h2><p class="muted">இந்தப் பதிப்பு பதிவுகளை இந்த உலாவியின் local storage-இல் மட்டுமே சேமிக்கிறது. வேறு சாதனத்துடன் தானாக ஒத்திசைக்காது.</p><div class="actions"><button class="secondary" id="exportBtn" type="button">தரவைப் பதிவிறக்கு / Export JSON</button><button class="danger" id="clearDataBtn" type="button">எல்லா தரவையும் அழி / Clear all data</button></div><p class="status" id="dataMessage" aria-live="polite"></p><div class="notice">தனியுரிமை: தனிப்பட்ட தொலைபேசி எண்களைப் பொது இணையத்தில் பகிர வேண்டாம். இந்த இணையதளத்தைப் பயன்படுத்தும் முன் பெற்றோர் / பாதுகாவலர் அல்லது நம்பகமான பெரியவரிடம் ஆலோசிக்கவும்.</div></section>
 </main>
-
-<div class="modal" id="modal">
-<div class="dialog">
-<button onclick="closeModal()">மூடு ✕</button>
-<div id="content"></div>
-</div>
-</div>
-
-<footer>கமலேஷ் பண்ணை AI<br>விவசாயமே நாட்டின் முதுகெலும்பு 🌾</footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><div class="dialog-head"><h2 id="modalTitle"></h2><button class="close" id="closeModal" type="button">மூடு ✕</button></div><div id="modalContent"></div></div></div>
+<footer>காமலேஷ் பண்ணை AI · Khamalesh Farm AI<br>விவசாயமே நாட்டின் முதுகெலும்பு 🌾</footer>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const STORAGE={crops:"khamalesh_crops_v3",farmers:"khamalesh_farmers_v3",equipment:"khamalesh_equipment_v3",irrigation:"khamalesh_irrigation_v1",records:"khamalesh_records_v1"};
+let tamil=true;
+const services=[
+ ["💧","நிலத்தடி நீர் வழிகாட்டி","கிணறு மற்றும் உள்ளூர் நீர் விவரங்களைப் பதிவு செய்யுங்கள்.","Groundwater Guide","Record well and local water information.","#irrigation"],
+ ["🌿","பயிர் நோய் வழிகாட்டி","புகைப்படத்தை வேளாண் நிபுணரிடம் காட்டத் தயாராகுங்கள்.","Plant Disease Guide","Prepare to discuss crop photos with an expert.","#assistant"],
+ ["🧪","மண் பரிசோதனை","pH மற்றும் NPK மதிப்புகளுக்கான ஆரம்ப விளக்கம்.","Soil Test Guide","Get a basic explanation of pH and NPK values.","#soil-analyzer"],
+ ["🌾","பயிர் வழிகாட்டி","மண், நீர், பருவம் ஆகியவற்றை வைத்து பயிரைத் தேர்வு செய்யுங்கள்.","Crop Guidance","Choose crops considering soil, water and season.","#assistant"],
+ ["🚿","நீர்ப்பாசனத் திட்டம்","பயிர் நிலை மற்றும் வயல் குறிப்புகளைச் சேமிக்கவும்.","Irrigation Planner","Save crop-stage and field notes.","#irrigation"],
+ ["🌦️","வானிலை அறிக்கை","இந்திய வானிலை ஆய்வு மையத்தின் தகவலைப் பார்க்கவும்.","Weather Report","Check the India Meteorological Department.","#quick-links"],
+ ["🧴","உர வழிகாட்டி","மண் பரிசோதனை அறிக்கையின் அடிப்படையில் ஆலோசனை பெறுங்கள்.","Fertilizer Guidance","Use advice based on a soil-test report.","#soil-analyzer"],
+ ["📈","சந்தை விலை","அரசு சந்தை விலைத் தளங்களைப் பார்க்கவும்.","Market Prices","Check official market-price portals.","#quick-links"],
+ ["🤖","பண்ணை உதவி மையம்","பொதுவான விவசாய வழிகாட்டியைப் பெறுங்கள்.","Farm Help Desk","Find general farming guidance.","#assistant"],
+ ["📒","பண்ணை பதிவுகள்","செலவு மற்றும் வருமானத்தைப் பதிவு செய்யுங்கள்.","Farm Records","Record farm expenses and income.","#farm-records"],
+ ["🚜","உபகரணச் சந்தை","உபகரணங்களை வாங்க, விற்க அல்லது வாடகைக்கு பதிவு செய்யுங்கள்.","Equipment Marketplace","List equipment to buy, sell or rent.","#equipment-market"]
+];
+function readStore(key){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch{return []}}
+function writeStore(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){alert("சேமிக்க முடியவில்லை. உலாவி சேமிப்பு இடத்தைச் சரிபார்க்கவும்.");return false}}
+function make(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=String(text);if(cls)el.className=cls;return el}
+function uid(){return (crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
+function escapeText(s){return String(s??"")}
+function updateStats(){$("cropCount").textContent=readStore(STORAGE.crops).length;$("farmerCount").textContent=readStore(STORAGE.farmers).length;$("equipmentCount").textContent=readStore(STORAGE.equipment).length}
+function renderServices(){const q=$("serviceSearch").value.trim().toLocaleLowerCase();const grid=$("serviceGrid");grid.replaceChildren();services.forEach((s,i)=>{if(!s.join(" ").toLocaleLowerCase().includes(q))return;const c=make("article",undefined,"service-card");c.append(make("div",s[0],"emoji"),make("h3",(i+1)+". "+(tamil?s[1]:s[3])),make("p",tamil?s[2]:s[4]));const b=make("button",tamil?"திறக்கவும்":"Open");b.type="button";b.addEventListener("click",()=>document.querySelector(s[5]).scrollIntoView({behavior:"smooth"}));c.append(b);grid.append(c)});if(!grid.children.length)grid.append(make("div",tamil?"சேவைகள் கிடைக்கவில்லை.":"No services found.","empty"))}
+function renderCrops(){const el=$("cropListings"),q=$("cropSearch").value.trim().toLocaleLowerCase();el.replaceChildren();const all=readStore(STORAGE.crops),filtered=all.filter(c=>(c.crop+" "+c.village).toLocaleLowerCase().includes(q));if(!filtered.length){el.append(make("div",all.length?"பொருத்தமான பதிவுகள் இல்லை.":"இன்னும் பயிர்கள் பதிவு செய்யப்படவில்லை.","empty"));return}filtered.forEach(c=>{const card=make("article",undefined,"listing");card.append(make("p","🌾 "+c.crop),make("p","அளவு: "+c.quantity+" கிலோ"),make("p","மொத்த விலை: ₹"+Number(c.price).toLocaleString("en-IN")),make("p","இடம்: "+c.village));const del=make("button","நீக்கு / Delete","danger");del.type="button";del.addEventListener("click",()=>{if(confirm("இந்தப் பதிவை நீக்கவா? / Delete this listing?")){writeStore(STORAGE.crops,readStore(STORAGE.crops).filter(x=>x.id!==c.id));renderCrops();updateStats()}});card.append(del);el.append(card)})}
+$("cropForm").addEventListener("submit",e=>{e.preventDefault();const crop={id:uid(),crop:$("cropName").value.trim(),quantity:Number($("cropQuantity").value),price:Number($("cropPrice").value),village:$("cropVillage").value.trim(),createdAt:new Date().toISOString()};const phone=$("cropPhone").value.trim();if(phone&&!/^[0-9]{10}$/.test(phone)){$("cropMessage").textContent="சரியான 10 இலக்க எண்ணை உள்ளிடுங்கள்.";return}if(!crop.crop||!crop.village||crop.quantity<1||crop.price<1){$("cropMessage").textContent="சரியான விவரங்களை உள்ளிடுங்கள்.";return}if(writeStore(STORAGE.crops,[crop,...readStore(STORAGE.crops)])){e.target.reset();$("cropMessage").textContent="பயிர் பதிவு சேமிக்கப்பட்டது.";renderCrops();updateStats()}});
+$("cropSearch").addEventListener("input",renderCrops);
+$("farmerForm").addEventListener("submit",e=>{e.preventDefault();const f={id:uid(),name:$("farmerName").value.trim(),phone:$("farmerPhone").value.trim(),village:$("farmerVillage").value.trim(),district:$("farmerDistrict").value.trim(),land:$("farmerLand").value.trim()};if(!/^[0-9]{10}$/.test(f.phone)){$("farmerMessage").textContent="சரியான 10 இலக்க கைபேசி எண்ணை உள்ளிடுங்கள்.";return}if(writeStore(STORAGE.farmers,[f,...readStore(STORAGE.farmers)])){e.target.reset();$("farmerMessage").textContent="விவரம் இந்தச் சாதனத்தில் சேமிக்கப்பட்டது.";renderFarmers();updateStats()}});
+function renderFarmers(){const el=$("farmerListings");el.replaceChildren();const all=readStore(STORAGE.farmers);if(!all.length)return;el.append(make("h3","சேமிக்கப்பட்ட விவசாயிகள்"));all.forEach(f=>{const c=make("div",undefined,"listing");c.append(make("p",f.name+" • "+f.village+", "+f.district),make("p","நிலம்: "+f.land));const del=make("button","நீக்கு / Delete","danger");del.type="button";del.addEventListener("click",()=>{if(confirm("இந்த விவரத்தை நீக்கவா?")){writeStore(STORAGE.farmers,readStore(STORAGE.farmers).filter(x=>x.id!==f.id));renderFarmers();updateStats()}});c.append(del);el.append(c)})}
+$("equipmentForm").addEventListener("submit",e=>{e.preventDefault();const x={id:uid(),name:$("equipmentName").value.trim(),action:$("equipmentAction").value,price:Number($("equipmentPrice").value),village:$("equipmentVillage").value.trim()};if(!x.name||!x.village||x.price<0){$("equipmentMessage").textContent="சரியான விவரங்களை உள்ளிடுங்கள்.";return}if(writeStore(STORAGE.equipment,[x,...readStore(STORAGE.equipment)])){e.target.reset();$("equipmentMessage").textContent="உபகரணப் பதிவு சேமிக்கப்பட்டது.";renderEquipment();updateStats()}});
+function renderEquipment(){const el=$("equipmentListings");el.replaceChildren();const all=readStore(STORAGE.equipment);if(!all.length){el.append(make("div","இன்னும் உபகரணங்கள் பதிவு செய்யப்படவில்லை.","empty"));return}all.forEach(x=>{const c=make("article",undefined,"listing");c.append(make("p","🚜 "+x.name+" — "+x.action),make("p","விலை: ₹"+Number(x.price).toLocaleString("en-IN")),make("p","இடம்: "+x.village));const b=make("button","நீக்கு / Delete","danger");b.type="button";b.addEventListener("click",()=>{if(confirm("இந்தப் பதிவை நீக்கவா?")){writeStore(STORAGE.equipment,readStore(STORAGE.equipment).filter(y=>y.id!==x.id));renderEquipment();updateStats()}});c.append(b);el.append(c)})}
+$("soilForm").addEventListener("submit",e=>{e.preventDefault();const ph=Number($("soilPH").value),n=Number($("soilN").value),p=Number($("soilP").value),k=Number($("soilK").value),out=$("soilResult");if(![ph,n,p,k].every(Number.isFinite)||ph<0||ph>14||n<0||p<0||k<0){out.textContent="சரியான மதிப்புகளை உள்ளிடுங்கள்.";return}out.replaceChildren(make("h3","📊 ஆரம்ப மண் விளக்கம்"));out.append(make("p","pH "+ph+": "+(ph<6?"அமிலத்தன்மை இருக்கலாம்":ph<=8.5?"பல பயிர்களுக்கு ஏற்ற பொதுவான வரம்பில் இருக்கலாம்":"காரத்தன்மை இருக்கலாம்")),make("p","N: "+n+" | P: "+p+" | K: "+k),make("p","NPK மதிப்புகளின் குறைவு/அதிகம் மண் வகை, பயிர் மற்றும் ஆய்வக முறையைப் பொறுத்தது. அறிக்கையின் பரிந்துரையைப் பின்பற்றுங்கள்."));out.className="result"});
+$("irrigationForm").addEventListener("submit",e=>{e.preventDefault();const item={id:uid(),crop:$("irrigationCrop").value.trim(),stage:$("irrigationStage").value.trim(),notes:$("irrigationNotes").value.trim(),date:new Date().toLocaleDateString()};if(writeStore(STORAGE.irrigation,[item,...readStore(STORAGE.irrigation)])){e.target.reset();$("irrigationMessage").textContent="குறிப்பு சேமிக்கப்பட்டது.";renderIrrigation()}});
+function renderIrrigation(){const el=$("irrigationListings");el.replaceChildren();readStore(STORAGE.irrigation).forEach(x=>{const d=make("div",undefined,"listing");d.append(make("b",x.crop+" • "+x.stage),make("p",x.notes),make("small",x.date));const b=make("button","நீக்கு / Delete","danger");b.type="button";b.addEventListener("click",()=>{writeStore(STORAGE.irrigation,readStore(STORAGE.irrigation).filter(y=>y.id!==x.id));renderIrrigation()});d.append(b);el.append(d)})}
+$("recordForm").addEventListener("submit",e=>{e.preventDefault();const r={id:uid(),type:$("recordType").value,title:$("recordTitle").value.trim(),amount:Number($("recordAmount").value),date:new Date().toLocaleDateString()};if(!r.title||r.amount<1)return;if(writeStore(STORAGE.records,[r,...readStore(STORAGE.records)])){e.target.reset();$("recordMessage").textContent="பதிவு சேமிக்கப்பட்டது.";renderRecords()}});
+function renderRecords(){const el=$("recordListings");el.replaceChildren();const all=readStore(STORAGE.records);let income=0,expense=0;all.forEach(r=>{if(r.type==="வருமானம்")income+=r.amount;else expense+=r.amount});el.append(make("p","மொத்த வருமானம்: ₹"+income.toLocaleString("en-IN")+" | மொத்த செலவு: ₹"+expense.toLocaleString("en-IN")+" | இருப்பு: ₹"+(income-expense).toLocaleString("en-IN")));all.forEach(r=>{const row=make("div",undefined,"record-row");row.append(make("span",r.type+" · "+r.title+" · "+r.date),make("b","₹"+r.amount.toLocaleString("en-IN")));const del=make("button","×","danger");del.type="button";del.setAttribute("aria-label","Delete record");del.addEventListener("click",()=>{writeStore(STORAGE.records,readStore(STORAGE.records).filter(x=>x.id!==r.id));renderRecords()});row.append(del);el.append(row)})}
+const helpText={soil:"மண் பரிசோதனை ஆய்வக அறிக்கையைப் பெற்று pH, N, P, K மற்றும் கரிம கார்பன் மதிப்புகளைப் பாருங்கள். உர அளவை உள்ளூர் வேளாண் அலுவலரிடம் உறுதிப்படுத்துங்கள்.",disease:"பாதிக்கப்பட்ட செடியின் தெளிவான புகைப்படம், பயிர் வகை, வயது, அறிகுறிகள் தொடங்கிய நாள் ஆகியவற்றை பதிவு செய்து வேளாண் அலுவலரிடம் காட்டுங்கள். உறுதிப்படுத்தாமல் மருந்து பயன்படுத்த வேண்டாம்.",water:"மண் ஈரம், பயிரின் வளர்ச்சி நிலை, மழை முன்னறிவிப்பு மற்றும் நீர் கிடைப்பை கவனியுங்கள். உள்ளூர் வேளாண் அலுவலரின் ஆலோசனைப்படி திட்டமிடுங்கள்.",market:"விலை தினமும் மாறலாம். விற்பனைக்கு முன் e-NAM மற்றும் Agmarknet போன்ற அதிகாரப்பூர்வ தளங்களில் உங்கள் சந்தை, பயிர், தரம் ஆகியவற்றைச் சரிபாருங்கள்."};
+$("helpButton").addEventListener("click",()=>{const r=$("helpResult");r.hidden=false;r.textContent=helpText[$("helpTopic").value]});
+$("serviceSearch").addEventListener("input",renderServices);$("clearSearch").addEventListener("click",()=>{$("serviceSearch").value="";renderServices()});
+$("languageBtn").addEventListener("click",()=>{tamil=!tamil;document.documentElement.lang=tamil?"ta":"en";$("languageBtn").textContent=tamil?"English":"தமிழ்";$("brandTitle").textContent=tamil?"காமலேஷ் பண்ணை AI":"Khamalesh Farm AI";$("subtitle").textContent=tamil?"தமிழ்நாடு விவசாயிகளுக்கான ஸ்மார்ட் உதவியாளர்":"Smart assistant for Tamil Nadu farmers";$("welcome").textContent=tamil?"🌾 வணக்கம் விவசாயி!":"🌾 Welcome, Farmer!";$("intro").textContent=tamil?"விவசாயப் பணிகள், சந்தை மற்றும் பண்ணை பதிவுகளுக்கான ஒரே இடம்.":"One place for farm tools, marketplace and farm records.";$("heroBadge").textContent=tamil?"விவசாயம் • தொழில்நுட்பம் • வளர்ச்சி":"Farming • Technology • Growth";$("serviceTitle").textContent=tamil?"பண்ணை சேவைகள்":"Farm Services";$("serviceSub").textContent=tamil?"உங்களுக்கு தேவையான கருவியைத் தேர்ந்தெடுக்கவும்.":"Choose a tool you need.";document.querySelectorAll("[data-ta][data-en]").forEach(el=>el.textContent=tamil?el.dataset.ta:el.dataset.en);renderServices()});
+$("exportBtn").addEventListener("click",()=>{const data={exportedAt:new Date().toISOString(),crops:readStore(STORAGE.crops),farmers:readStore(STORAGE.farmers),equipment:readStore(STORAGE.equipment),irrigation:readStore(STORAGE.irrigation),records:readStore(STORAGE.records)};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=make("a");a.href=url;a.download="khamalesh-farm-data.json";a.click();URL.revokeObjectURL(url);$("dataMessage").textContent="தரவு பதிவிறக்கம் செய்யப்பட்டது."});
+$("clearDataBtn").addEventListener("click",()=>{if(!confirm("இந்த உலாவியில் சேமித்துள்ள எல்லா பண்ணைத் தரவையும் நிரந்தரமாக அழிக்கவா?"))return;Object.values(STORAGE).forEach(k=>localStorage.removeItem(k));renderAll();$("dataMessage").textContent="சேமித்த தரவு அழிக்கப்பட்டது."});
+$("closeModal").addEventListener("click",()=>$("modal").style.display="none");
+function renderAll(){renderServices();renderCrops();renderFarmers();renderEquipment();renderIrrigation();renderRecords();updateStats()}
+renderAll();
+</script>
 
 <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
 
-});
-
-let tamil=true;
-
-
-    regular: "ஆண்டு முழுவதும் நீர் கிடைப்பதாக தெரிவிக்கப்பட்டுள்ளது.",
-    seasonal: "மழைக்காலத்தில் மட்டும் நீர் கிடைப்பதாக தெரிவிக்கப்பட்டுள்ளது.",
-    scarce: "நீர் குறைவாக கிடைப்பதாக தெரிவிக்கப்பட்டுள்ளது.",
-    unknown: "நீர் கிடைக்கும் நிலை தெரியவில்லை."
-  };
-
-  const rockText = {
-    red: "சிவப்பு மண்",
-    black: "கரிசல் மண்",
-    sand: "மணல் மண்",
-    gravel: "சரளை / பாறை",
-    unknown: "தெரியவில்லை"
-  };
-
-  result.replaceChildren();
-
-  const heading = document.createElement("h3");
-  heading.textContent = "💧 நிலத்தடி நீர் ஆய்வு அறிக்கை";
-  result.appendChild(heading);
-
-  const details = [
-    "கிராமம்: " + village,
-    "மாவட்டம்: " + district,
-    "அருகிலுள்ள கிணற்றின் ஆழம்: " +
-      (depthValue === "" ? "தெரியவில்லை" : depthValue + " மீட்டர்"),
-    waterText[water],
-    "மண் / பாறை வகை: " + rockText[rock],
-    "கூடுதல் தகவல்கள்: " + (notes || "இல்லை")
-  ];
-
-  
+</body>
+</html>
