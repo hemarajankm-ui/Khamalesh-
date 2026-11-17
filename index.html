@@ -1,5 +1,3 @@
-
-
 <p><a href="https://mausam.imd.gov.in/" target="_blank" rel="noopener">IMD Weather</a></p>
 <p><a href="https://agri.tn.gov.in/" target="_blank" rel="noopener">Tamil Nadu Agriculture</a></p>
 </section>
@@ -134,4 +132,6 @@ async function loadCategory(category){
     const details = document.createElement("p");
     details.textContent = Object.entries(item.data)
       .map(([k,v])=>k+": "+v).join(" | ");
+
+
 
